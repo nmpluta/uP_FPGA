@@ -72,8 +72,6 @@ signal        int_enable_type : std_logic;
 signal interrupt_enable_value : std_logic;
 signal       interrupt_enable : std_logic;
 signal         sync_interrupt : std_logic;
-signal active_interrupt_value : std_logic;
-signal       active_interrupt : std_logic;
 
 --
 -- Arithmetic and Logical Functions
@@ -251,7 +249,7 @@ begin
             I1 => instruction(0),
             I2 => int_enable_type,
             I3 => t_state(1),
-            I4 => active_interrupt,
+            I4 => '0',
             I5 => internal_reset,
              O => interrupt_enable_value);
 
@@ -259,12 +257,6 @@ begin
   port map (  D => interrupt_enable_value,
               Q => interrupt_enable,
               C => clk);
-
-  -- sync_interrupt_flop: FD
-  -- port map (  D => interrupt,
-  --             Q => sync_interrupt,
-  --             C => clk);
-
   active_interrupt_lut: LUT6_2
   generic map (INIT => X"CC33FF0080808080")
   port map( I0 => interrupt_enable,
@@ -273,21 +265,8 @@ begin
             I3 => bank,
             I4 => loadstar_type,
             I5 => '1',
-            O5 => active_interrupt_value,
             O6 => sx_addr4_value);
 
-  active_interrupt_flop: FD
-  port map (  D => active_interrupt_value,
-              Q => active_interrupt,
-              C => clk);
-
-  -- interrupt_ack_flop: FD
-  -- port map (  D => active_interrupt,
-  --             Q => interrupt_ack,
-  --             C => clk);
-
-
-  --
   -------------------------------------------------------------------------------------------
   --
   -- Decoders
@@ -332,7 +311,7 @@ begin
             I1 => returni_type,
             I2 => move_type,
             I3 => pc_move_is_valid,
-            I4 => active_interrupt,
+            I4 => '0',
             I5 => '1',
             O5 => pc_mode(0),
             O6 => pc_mode(1));
@@ -344,7 +323,7 @@ begin
             I2 => instruction(15),
             I3 => instruction(16),
             I4 => instruction(17),
-            I5 => active_interrupt,
+            I5 => '0',
              O => pc_mode(2));
 
   --
@@ -386,13 +365,13 @@ begin
   flag_enable_flop: FDR
   port map (  D => flag_enable_value,
               Q => flag_enable,
-              R => active_interrupt,
+              R => '0',
               C => clk);
 
   register_enable_flop: FDR
   port map (  D => register_enable_value,
               Q => register_enable,
-              R => active_interrupt,
+              R => '0',
               C => clk);
 
   spm_enable_lut: LUT6_2
@@ -409,13 +388,13 @@ begin
   k_write_strobe_flop: FDR
   port map (  D => k_write_strobe_value,
               Q => k_write_strobe,
-              R => active_interrupt,
+              R => '0',
               C => clk);
 
   spm_enable_flop: FDR
   port map (  D => spm_enable_value,
               Q => spm_enable,
-              R => active_interrupt,
+              R => '0',
               C => clk);
 
   read_strobe_lut: LUT6_2
@@ -432,13 +411,13 @@ begin
   write_strobe_flop: FDR
   port map (  D => write_strobe_value,
               Q => write_strobe,
-              R => active_interrupt,
+              R => '0',
               C => clk);
 
   read_strobe_flop: FDR
   port map (  D => read_strobe_value,
               Q => read_strobe,
-              R => active_interrupt,
+              R => '0',
               C => clk);
 
   --
