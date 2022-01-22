@@ -31,6 +31,7 @@ proc attach_rtl_files {} {
                 rtl/uart_tx6.vhd
                 rtl/uart_rx6.vhd
                 rtl/auto_baud_rate_control.vhd
+                rtl/alu_decode.vhd
         }
 
         # read_verilog {

@@ -1,6 +1,6 @@
 --
 -------------------------------------------------------------------------------------------
--- Copyright © 2010-2014, Xilinx, Inc.
+-- Copyright ï¿½ 2010-2014, Xilinx, Inc.
 -- This file contains confidential and proprietary information of Xilinx, Inc. and is
 -- protected under U.S. and international copyright and other intellectual property laws.
 -------------------------------------------------------------------------------------------
@@ -109,6 +109,29 @@ entity kcpsm6 is
 -- Start of Main Architecture for kcpsm6
 --	 
 architecture low_level_definition of kcpsm6 is
+--
+-------------------------------------------------------------------------------------------
+--
+-- Components
+--
+-------------------------------------------------------------------------------------------
+--
+
+--
+-- declaration of alu_decode
+--
+  component alu_decode
+    port(
+      clk : in std_logic;
+
+      instruction :       in std_logic_vector(17 downto 0);
+      carry_flag :        in std_logic;
+      arith_logical_sel : out std_logic_vector(2 downto 0);
+      arith_carry_in :    out std_logic;
+      alu_mux_sel :       out std_logic_vector(1 downto 0));
+  end component;
+
+
 --
 -------------------------------------------------------------------------------------------
 --
@@ -584,8 +607,8 @@ attribute hblknm of     pc_move_is_valid_lut : label is "kcpsm6_decode0";
 attribute hblknm of     interrupt_enable_lut : label is "kcpsm6_decode0";
 attribute hblknm of    interrupt_enable_flop : label is "kcpsm6_decode0";
 
-attribute hblknm of          alu_decode1_lut : label is "kcpsm6_decode1";
-attribute hblknm of        alu_mux_sel1_flop : label is "kcpsm6_decode1";
+-- attribute hblknm of          alu_decode1_lut : label is "kcpsm6_decode1";
+-- attribute hblknm of        alu_mux_sel1_flop : label is "kcpsm6_decode1";
 attribute hblknm of          shift_carry_lut : label is "kcpsm6_decode1";
 attribute hblknm of         shift_carry_flop : label is "kcpsm6_decode1";
 attribute hblknm of        use_zero_flag_lut : label is "kcpsm6_decode1";
@@ -593,9 +616,9 @@ attribute hblknm of       use_zero_flag_flop : label is "kcpsm6_decode1";
 attribute hblknm of       interrupt_ack_flop : label is "kcpsm6_decode1";
 attribute hblknm of    shadow_zero_flag_flop : label is "kcpsm6_decode1";
 
-attribute hblknm of          alu_decode0_lut : label is "kcpsm6_decode2";
-attribute hblknm of        alu_mux_sel0_flop : label is "kcpsm6_decode2";
-attribute hblknm of          alu_decode2_lut : label is "kcpsm6_decode2";
+-- attribute hblknm of          alu_decode0_lut : label is "kcpsm6_decode2";
+-- attribute hblknm of        alu_mux_sel0_flop : label is "kcpsm6_decode2";
+-- attribute hblknm of          alu_decode2_lut : label is "kcpsm6_decode2";
 attribute hblknm of         lower_parity_lut : label is "kcpsm6_decode2";
 attribute hblknm of             parity_muxcy : label is "kcpsm6_decode2";
 attribute hblknm of         upper_parity_lut : label is "kcpsm6_decode2";
@@ -858,49 +881,58 @@ begin
   -- Decoding for ALU
   --
 
-  alu_decode0_lut: LUT6_2
-  generic map (INIT => X"03CA000004200000")
-  port map( I0 => instruction(13),
-            I1 => instruction(14),
-            I2 => instruction(15),
-            I3 => instruction(16),
-            I4 => '1',
-            I5 => '1',
-            O5 => alu_mux_sel_value(0),
-            O6 => arith_logical_sel(0));
+  decode: alu_decode
+    port map(
+      clk => clk,
+      instruction => instruction,
+      carry_flag => carry_flag,
+      arith_logical_sel => arith_logical_sel,
+      arith_carry_in => arith_carry_in,
+      alu_mux_sel => alu_mux_sel);
 
-  alu_mux_sel0_flop: FD
-  port map (  D => alu_mux_sel_value(0),
-              Q => alu_mux_sel(0),
-              C => clk);
+  -- alu_decode0_lut: LUT6_2
+  -- generic map (INIT => X"03CA000004200000")
+  -- port map( I0 => instruction(13),
+  --           I1 => instruction(14),
+  --           I2 => instruction(15),
+  --           I3 => instruction(16),
+  --           I4 => '1',
+  --           I5 => '1',
+  --           O5 => alu_mux_sel_value(0),
+  --           O6 => arith_logical_sel(0));
 
-  alu_decode1_lut: LUT6_2
-  generic map (INIT => X"7708000000000F00")
-  port map( I0 => carry_flag,
-            I1 => instruction(13),
-            I2 => instruction(14),
-            I3 => instruction(15),
-            I4 => instruction(16),
-            I5 => '1',
-            O5 => alu_mux_sel_value(1),
-            O6 => arith_carry_in);                     
+  -- alu_mux_sel0_flop: FD
+  -- port map (  D => alu_mux_sel_value(0),
+  --             Q => alu_mux_sel(0),
+  --             C => clk);
 
-  alu_mux_sel1_flop: FD
-  port map (  D => alu_mux_sel_value(1),
-              Q => alu_mux_sel(1),
-              C => clk);
+  -- alu_decode1_lut: LUT6_2
+  -- generic map (INIT => X"7708000000000F00")
+  -- port map( I0 => carry_flag,
+  --           I1 => instruction(13),
+  --           I2 => instruction(14),
+  --           I3 => instruction(15),
+  --           I4 => instruction(16),
+  --           I5 => '1',
+  --           O5 => alu_mux_sel_value(1),
+  --           O6 => arith_carry_in);                     
+
+  -- alu_mux_sel1_flop: FD
+  -- port map (  D => alu_mux_sel_value(1),
+  --             Q => alu_mux_sel(1),
+  --             C => clk);
 
 
-  alu_decode2_lut: LUT6_2
-  generic map (INIT => X"D000000002000000")
-  port map( I0 => instruction(14),
-            I1 => instruction(15),
-            I2 => instruction(16),
-            I3 => '1',
-            I4 => '1',
-            I5 => '1',
-            O5 => arith_logical_sel(1),
-            O6 => arith_logical_sel(2));
+  -- alu_decode2_lut: LUT6_2
+  -- generic map (INIT => X"D000000002000000")
+  -- port map( I0 => instruction(14),
+  --           I1 => instruction(15),
+  --           I2 => instruction(16),
+  --           I3 => '1',
+  --           I4 => '1',
+  --           I5 => '1',
+  --           O5 => arith_logical_sel(1),
+  --           O6 => arith_logical_sel(2));
 
   --
   -- Decoding for strobes and enables
