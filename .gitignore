@@ -7,8 +7,8 @@
 #########
 *
 !*/
-project/.Xil
-project/vivado
+project/.Xil/.*
+project/vivado/.*
 # ! vivado
 !.gitignore
 ###########################################################################
