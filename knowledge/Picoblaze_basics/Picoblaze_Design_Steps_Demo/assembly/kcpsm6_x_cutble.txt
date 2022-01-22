@@ -1,0 +1,9 @@
+kcpsm6.exe file is removed from here as otherwise the zip file is blocked from being downloaded by most browsers.
+
+I have created a separate .zip file for it alone called kcpsm6_x_cutble.zip file.
+In this .zip file, I changed the file name from kcpsm6.exe to kcpsm6_x_cutble . 
+If you are able to download it, then you can change the name back to kcpsm6.exe
+
+Otherwise your TAs will provide the kcpsm6.exe file to you in lab.
+
+Gandhi 
