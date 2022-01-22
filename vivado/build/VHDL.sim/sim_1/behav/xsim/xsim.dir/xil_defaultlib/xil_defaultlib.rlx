@@ -1,0 +1,10 @@
+0.6
+2018.2
+Jun 14 2018
+20:41:02
+C:/Users/dawid/uP_FPGA/rtl/auto_baud_rate_control.vhd,1642877868,vhdl,,,,auto_baud_rate_control;jtag_loader_6;jtag_loader_pkg,,,,,,,,
+C:/Users/dawid/uP_FPGA/rtl/kcpsm6.vhd,1642853631,vhdl,,,,kcpsm6,,,,,,,,
+C:/Users/dawid/uP_FPGA/rtl/uart6_kc705.vhd,1642874075,vhdl,,,,uart6_kc705,,,,,,,,
+C:/Users/dawid/uP_FPGA/rtl/uart_rx6.vhd,1642854611,vhdl,,,,uart_rx6,,,,,,,,
+C:/Users/dawid/uP_FPGA/rtl/uart_tx6.vhd,1642854612,vhdl,,,,uart_tx6,,,,,,,,
+C:/Users/dawid/uP_FPGA/sim/testbench_uart6_kc705.vhd,1642874582,vhdl,,,,testbench_uart6_kc705,,,,,,,,

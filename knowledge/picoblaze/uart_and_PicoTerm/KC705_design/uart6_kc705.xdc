@@ -40,18 +40,18 @@
 #
 # KC705 Board (www.xilinx.com) Rev 1.1
 #
-# XC7K325T-1FFG900 Device 
+# XC7K325T-1FFG900 Device
 #
 # Ken Chapman - Xilinx Ltd
-# 
+#
 # 3rd June 2014
 #
 #
 # DEVICE
 # ------
 #
-# On the KC705 board, bank 0 and the CFGBVS pin are connected to a 2.5v supply. 
-# 
+# On the KC705 board, bank 0 and the CFGBVS pin are connected to a 2.5v supply.
+#
 # Configuration voltage supplied to bank 0
 # Specified as an actual voltage value
 set_property CONFIG_VOLTAGE 2.5 [current_design]
@@ -93,12 +93,12 @@ set_clock_groups -name my_async_clocks -asynchronous -group [get_clocks clk200] 
 #
 #
 set_max_delay 50 -from [get_ports uart_rx] -to [get_clocks clk200] -quiet -datapath_only
-set_min_delay  0 -from [get_ports uart_rx] -to [get_clocks clk200] -quiet 
+set_min_delay  0 -from [get_ports uart_rx] -to [get_clocks clk200] -quiet
 #set_max_delay 50 -from [get_ports cpu_rst] -to [get_clocks clk200] -quiet -datapath_only
-#set_min_delay  0 -from [get_ports cpu_rst] -to [get_clocks clk200] -quiet 
+#set_min_delay  0 -from [get_ports cpu_rst] -to [get_clocks clk200] -quiet
 #
 set_max_delay 50 -from [get_clocks clk200] -to [get_ports uart_tx] -quiet -datapath_only
-set_min_delay  0 -from [get_clocks clk200] -to [get_ports uart_tx] -quiet 
+set_min_delay  0 -from [get_clocks clk200] -to [get_ports uart_tx] -quiet
 #
 #
 #
@@ -108,7 +108,7 @@ set_min_delay  0 -from [get_clocks clk200] -to [get_ports uart_tx] -quiet
 #
 # 200MHz Differential Clock
 # -------------------------
-# 
+#
 set_property PACKAGE_PIN AD12 [get_ports clk200_p]
 set_property IOSTANDARD DIFF_SSTL15 [get_ports clk200_p]
 #
@@ -120,18 +120,70 @@ set_property IOSTANDARD DIFF_SSTL15 [get_ports clk200_n]
 # --------
 #
 set_property PACKAGE_PIN M19 [get_ports uart_rx]
-set_property IOSTANDARD LVCMOS25 [get_ports uart_rx]
+set_property IOSTANDARD LVCMOS15 [get_ports uart_rx]
 #
 set_property PACKAGE_PIN K24 [get_ports uart_tx]
-set_property IOSTANDARD LVCMOS25 [get_ports uart_tx]
+set_property IOSTANDARD LVCMOS15 [get_ports uart_tx]
 set_property SLEW SLOW [get_ports uart_tx]
 set_property DRIVE 4 [get_ports uart_tx]
+
+# Switches
+#Bank = 34, Pin name = IO_L21P_T3_DQS_34,					Sch name = Sw0
+set_property PACKAGE_PIN U9 [get_ports {Sw0}]
+	set_property IOSTANDARD LVCMOS15  [get_ports {Sw0}]
+#Bank = 34, Pin name = IO_25_34,							Sch name = Sw1
+set_property PACKAGE_PIN U8 [get_ports {Sw1}]
+	set_property IOSTANDARD LVCMOS15  [get_ports {Sw1}]
+#Bank = 34, Pin name = IO_L23P_T3_34,						Sch name = Sw2
+set_property PACKAGE_PIN R7 [get_ports {Sw2}]
+	set_property IOSTANDARD LVCMOS15  [get_ports {Sw2}]
+#Bank = 34, Pin name = IO_L19P_T3_34,						Sch name = Sw3
+set_property PACKAGE_PIN R6 [get_ports {Sw3}]
+	set_property IOSTANDARD LVCMOS15  [get_ports {Sw3}]
+#Bank = 34, Pin name = IO_L19N_T3_VREF_34,					Sch name = Sw4
+set_property PACKAGE_PIN R5 [get_ports {Sw4}]
+	set_property IOSTANDARD LVCMOS15  [get_ports {Sw4}]
+#Bank = 34, Pin name = IO_L20P_T3_34,						Sch name = Sw5
+set_property PACKAGE_PIN V7 [get_ports {Sw5}]
+	set_property IOSTANDARD LVCMOS15  [get_ports {Sw5}]
+#Bank = 34, Pin name = IO_L20N_T3_34,						Sch name = Sw6
+set_property PACKAGE_PIN V6 [get_ports {Sw6}]
+	set_property IOSTANDARD LVCMOS15  [get_ports {Sw6}]
+#Bank = 34, Pin name = IO_L10P_T1_34,						Sch name = Sw7
+set_property PACKAGE_PIN V5 [get_ports {Sw7}]
+	set_property IOSTANDARD LVCMOS15  [get_ports {Sw7}]
+
+# LEDs
+#Bank = 34, Pin name = IO_L24N_T3_34,						Sch name = LED0
+set_property PACKAGE_PIN T8 [get_ports {Ld0}]
+	set_property IOSTANDARD LVCMOS15  [get_ports {Ld0}]
+#Bank = 34, Pin name = IO_L21N_T3_DQS_34,					Sch name = LED1
+set_property PACKAGE_PIN V9 [get_ports {Ld1}]
+	set_property IOSTANDARD LVCMOS15  [get_ports {Ld1}]
+#Bank = 34, Pin name = IO_L24P_T3_34,						Sch name = LED2
+set_property PACKAGE_PIN R8 [get_ports {Ld2}]
+	set_property IOSTANDARD LVCMOS15  [get_ports {Ld2}]
+#Bank = 34, Pin name = IO_L23N_T3_34,						Sch name = LED3
+set_property PACKAGE_PIN T6 [get_ports {Ld3}]
+	set_property IOSTANDARD LVCMOS15  [get_ports {Ld3}]
+#Bank = 34, Pin name = IO_L12P_T1_MRCC_34,					Sch name = LED4
+set_property PACKAGE_PIN T5 [get_ports {Ld4}]
+	set_property IOSTANDARD LVCMOS15  [get_ports {Ld4}]
+#Bank = 34, Pin name = IO_L12N_T1_MRCC_34,					Sch	name = LED5
+set_property PACKAGE_PIN T4 [get_ports {Ld5}]
+	set_property IOSTANDARD LVCMOS15  [get_ports {Ld5}]
+#Bank = 34, Pin name = IO_L22P_T3_34,						Sch name = LED6
+set_property PACKAGE_PIN U7 [get_ports {Ld6}]
+	set_property IOSTANDARD LVCMOS15  [get_ports {Ld6}]
+#Bank = 34, Pin name = IO_L22N_T3_34,						Sch name = LED7
+set_property PACKAGE_PIN U6 [get_ports {Ld7}]
+	set_property IOSTANDARD LVCMOS15  [get_ports {Ld7}]
 #
 #
 # CPU_RST press switch (SW7)
 # --------------------------
 #
-# This input is not used by this design but the constraints have been provided for 
+# This input is not used by this design but the constraints have been provided for
 # additional reference.
 #
 #    Active High
