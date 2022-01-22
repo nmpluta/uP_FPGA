@@ -1,1 +1,0 @@
--wto "4eea73be8da6431a9c8341fbe678deca" --incr --debug "typical" --relax --mt "2" -L "xil_defaultlib" -L "secureip" --snapshot "testbench_uart6_kc705_behav" "xil_defaultlib.testbench_uart6_kc705" -log "elaborate.log" 
