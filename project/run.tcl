@@ -28,8 +28,6 @@ proc attach_rtl_files {} {
         read_vhdl {
                 rtl/uart6_kc705.vhd
                 rtl/kcpsm6.vhd
-                rtl/uart_tx6.vhd
-                rtl/uart_rx6.vhd
                 rtl/auto_baud_rate_control.vhd
                 rtl/alu_decode.vhd
                 rtl/strobe_enables_decode.vhd
@@ -168,7 +166,7 @@ if {[lindex $argv 0] == "simulation"} {
 	launch_simulation
         #run all
         # add_wave {{/testbench_uart6_kc705/uut/set_baud_rate}} {{/testbench_uart6_kc705/uut/en_16_x_baud}}
-        add_wave {{/testbench_uart6_kc705/uut/processor/address}} {{/testbench_uart6_kc705/uut/processor/kcpsm6_opcode}} {{/testbench_uart6_kc705/uut/processor/kcpsm6_status}} {{/testbench_uart6_kc705/uut/processor/sim_s0}} {{/testbench_uart6_kc705/uut/processor/sim_s1}} {{/testbench_uart6_kc705/uut/processor/sim_s2}} {{/testbench_uart6_kc705/uut/processor/sim_s3}} {{/testbench_uart6_kc705/uut/processor/sim_s4}} {{/testbench_uart6_kc705/uut/processor/sim_s5}} {{/testbench_uart6_kc705/uut/processor/sim_s6}} {{/testbench_uart6_kc705/uut/processor/sim_s7}} {{/testbench_uart6_kc705/uut/processor/sim_s8}} {{/testbench_uart6_kc705/uut/processor/sim_s9}} {{/testbench_uart6_kc705/uut/processor/sim_sA}} {{/testbench_uart6_kc705/uut/processor/sim_sB}} {{/testbench_uart6_kc705/uut/processor/sim_sC}} {{/testbench_uart6_kc705/uut/processor/sim_sD}} {{/testbench_uart6_kc705/uut/processor/sim_sE}} {{/testbench_uart6_kc705/uut/processor/sim_sF}}
+        add_wave {{/testbench_uart6_kc705/uut/processor/address}}
 
         start_gui
         run all
