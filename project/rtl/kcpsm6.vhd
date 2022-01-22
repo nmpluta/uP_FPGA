@@ -131,6 +131,21 @@ architecture low_level_definition of kcpsm6 is
       alu_mux_sel :       out std_logic_vector(1 downto 0));
   end component;
 
+  component strobe_enables_decode
+    port(
+      clk : in std_logic;
+  
+      instruction :       in std_logic_vector(17 downto 0);
+      t_state :           in std_logic_vector(2 downto 1);
+      active_interrupt :  in std_logic;
+      strobe_type :       in std_logic;
+  
+      flag_enable :       out std_logic;
+      register_enable :   out std_logic;
+      write_strobe :      out std_logic;
+      k_write_strobe :    out std_logic;
+      spm_enable :        out std_logic);
+    end component;
 
 --
 -------------------------------------------------------------------------------------------
@@ -565,94 +580,6 @@ signal     sim_spmFF : std_logic_vector(7 downto 0) := X"00";
 --
 --
 -------------------------------------------------------------------------------------------
---
--- WebTalk Attributes
---
-
-attribute CORE_GENERATION_INFO : string;
-attribute CORE_GENERATION_INFO of low_level_definition : ARCHITECTURE IS 
-    "kcpsm6,kcpsm6_v1_3,{component_name=kcpsm6}";
-
---
--- Attributes to guide mapping of logic into Slices.
---
-
-attribute hblknm : string; 
-attribute hblknm of                reset_lut : label is "kcpsm6_control";
-attribute hblknm of                 run_flop : label is "kcpsm6_control";
-attribute hblknm of      internal_reset_flop : label is "kcpsm6_control";
-attribute hblknm of              t_state_lut : label is "kcpsm6_control";
-attribute hblknm of            t_state1_flop : label is "kcpsm6_control";
-attribute hblknm of            t_state2_flop : label is "kcpsm6_control";
-attribute hblknm of     active_interrupt_lut : label is "kcpsm6_control";
-attribute hblknm of    active_interrupt_flop : label is "kcpsm6_control";
-attribute hblknm of            sx_addr4_flop : label is "kcpsm6_control";
-attribute hblknm of        arith_carry_xorcy : label is "kcpsm6_control";
-attribute hblknm of         arith_carry_flop : label is "kcpsm6_control";
-
-attribute hblknm of           zero_flag_flop : label is "kcpsm6_flags";
-attribute hblknm of          carry_flag_flop : label is "kcpsm6_flags";
-attribute hblknm of           carry_flag_lut : label is "kcpsm6_flags";
-attribute hblknm of           lower_zero_lut : label is "kcpsm6_flags";
-attribute hblknm of          middle_zero_lut : label is "kcpsm6_flags";
-attribute hblknm of           upper_zero_lut : label is "kcpsm6_flags";
-attribute hblknm of          init_zero_muxcy : label is "kcpsm6_flags";
-attribute hblknm of         lower_zero_muxcy : label is "kcpsm6_flags";
-attribute hblknm of        middle_zero_muxcy : label is "kcpsm6_flags";
-attribute hblknm of         upper_zero_muxcy : label is "kcpsm6_flags";
-
-attribute hblknm of      int_enable_type_lut : label is "kcpsm6_decode0";
-attribute hblknm of            move_type_lut : label is "kcpsm6_decode0";
-attribute hblknm of     pc_move_is_valid_lut : label is "kcpsm6_decode0";
-attribute hblknm of     interrupt_enable_lut : label is "kcpsm6_decode0";
-attribute hblknm of    interrupt_enable_flop : label is "kcpsm6_decode0";
-
--- attribute hblknm of          alu_decode1_lut : label is "kcpsm6_decode1";
--- attribute hblknm of        alu_mux_sel1_flop : label is "kcpsm6_decode1";
-attribute hblknm of          shift_carry_lut : label is "kcpsm6_decode1";
-attribute hblknm of         shift_carry_flop : label is "kcpsm6_decode1";
-attribute hblknm of        use_zero_flag_lut : label is "kcpsm6_decode1";
-attribute hblknm of       use_zero_flag_flop : label is "kcpsm6_decode1";
-attribute hblknm of       interrupt_ack_flop : label is "kcpsm6_decode1";
-attribute hblknm of    shadow_zero_flag_flop : label is "kcpsm6_decode1";
-
--- attribute hblknm of          alu_decode0_lut : label is "kcpsm6_decode2";
--- attribute hblknm of        alu_mux_sel0_flop : label is "kcpsm6_decode2";
--- attribute hblknm of          alu_decode2_lut : label is "kcpsm6_decode2";
-attribute hblknm of         lower_parity_lut : label is "kcpsm6_decode2";
-attribute hblknm of             parity_muxcy : label is "kcpsm6_decode2";
-attribute hblknm of         upper_parity_lut : label is "kcpsm6_decode2";
-attribute hblknm of             parity_xorcy : label is "kcpsm6_decode2";
-attribute hblknm of          sync_sleep_flop : label is "kcpsm6_decode2";
-attribute hblknm of      sync_interrupt_flop : label is "kcpsm6_decode2";
-
-attribute hblknm of             push_pop_lut : label is "kcpsm6_stack1";	
-attribute hblknm of         regbank_type_lut : label is "kcpsm6_stack1";	
-attribute hblknm of                 bank_lut : label is "kcpsm6_stack1";	
-attribute hblknm of                bank_flop : label is "kcpsm6_stack1";	
-
-attribute hblknm of register_enable_type_lut : label is "kcpsm6_strobes";	
-attribute hblknm of      register_enable_lut : label is "kcpsm6_strobes";	
-attribute hblknm of         flag_enable_flop : label is "kcpsm6_strobes";	
-attribute hblknm of     register_enable_flop : label is "kcpsm6_strobes";	
-attribute hblknm of           spm_enable_lut : label is "kcpsm6_strobes";	
-attribute hblknm of      k_write_strobe_flop : label is "kcpsm6_strobes";	
-attribute hblknm of          spm_enable_flop : label is "kcpsm6_strobes";	
-attribute hblknm of          read_strobe_lut : label is "kcpsm6_strobes";	
-attribute hblknm of        write_strobe_flop : label is "kcpsm6_strobes";	
-attribute hblknm of         read_strobe_flop : label is "kcpsm6_strobes";	
-
-attribute hblknm of            stack_ram_low : label is "kcpsm6_stack_ram0";	
-attribute hblknm of   shadow_carry_flag_flop : label is "kcpsm6_stack_ram0";	
-attribute hblknm of          stack_zero_flop : label is "kcpsm6_stack_ram0";	
-attribute hblknm of         shadow_bank_flop : label is "kcpsm6_stack_ram0";	
-attribute hblknm of           stack_bit_flop : label is "kcpsm6_stack_ram0";	
-attribute hblknm of           stack_ram_high : label is "kcpsm6_stack_ram1";	
-
-attribute hblknm of          lower_reg_banks : label is "kcpsm6_reg0";	
-attribute hblknm of          upper_reg_banks : label is "kcpsm6_reg1";	
-attribute hblknm of             pc_mode1_lut : label is "kcpsm6_vector1";	
-attribute hblknm of             pc_mode2_lut : label is "kcpsm6_vector1";	
 
 --
 -------------------------------------------------------------------------------------------
@@ -881,7 +808,7 @@ begin
   -- Decoding for ALU
   --
 
-  decode: alu_decode
+  dec_alu: alu_decode
     port map(
       clk => clk,
       instruction => instruction,
@@ -890,133 +817,23 @@ begin
       arith_carry_in => arith_carry_in,
       alu_mux_sel => alu_mux_sel);
 
-  -- alu_decode0_lut: LUT6_2
-  -- generic map (INIT => X"03CA000004200000")
-  -- port map( I0 => instruction(13),
-  --           I1 => instruction(14),
-  --           I2 => instruction(15),
-  --           I3 => instruction(16),
-  --           I4 => '1',
-  --           I5 => '1',
-  --           O5 => alu_mux_sel_value(0),
-  --           O6 => arith_logical_sel(0));
-
-  -- alu_mux_sel0_flop: FD
-  -- port map (  D => alu_mux_sel_value(0),
-  --             Q => alu_mux_sel(0),
-  --             C => clk);
-
-  -- alu_decode1_lut: LUT6_2
-  -- generic map (INIT => X"7708000000000F00")
-  -- port map( I0 => carry_flag,
-  --           I1 => instruction(13),
-  --           I2 => instruction(14),
-  --           I3 => instruction(15),
-  --           I4 => instruction(16),
-  --           I5 => '1',
-  --           O5 => alu_mux_sel_value(1),
-  --           O6 => arith_carry_in);                     
-
-  -- alu_mux_sel1_flop: FD
-  -- port map (  D => alu_mux_sel_value(1),
-  --             Q => alu_mux_sel(1),
-  --             C => clk);
-
-
-  -- alu_decode2_lut: LUT6_2
-  -- generic map (INIT => X"D000000002000000")
-  -- port map( I0 => instruction(14),
-  --           I1 => instruction(15),
-  --           I2 => instruction(16),
-  --           I3 => '1',
-  --           I4 => '1',
-  --           I5 => '1',
-  --           O5 => arith_logical_sel(1),
-  --           O6 => arith_logical_sel(2));
-
   --
   -- Decoding for strobes and enables
   --
 
-  register_enable_type_lut: LUT6_2
-  generic map (INIT => X"00013F3F0010F7CE")
-  port map( I0 => instruction(13),
-            I1 => instruction(14),
-            I2 => instruction(15),
-            I3 => instruction(16),
-            I4 => instruction(17),
-            I5 => '1',
-            O5 => flag_enable_type,
-            O6 => register_enable_type);
-
-  register_enable_lut: LUT6_2
-  generic map (INIT => X"C0CC0000A0AA0000")
-  port map( I0 => flag_enable_type,
-            I1 => register_enable_type,
-            I2 => instruction(12),
-            I3 => instruction(17),
-            I4 => t_state(1),
-            I5 => '1',
-            O5 => flag_enable_value,
-            O6 => register_enable_value);
-
-  flag_enable_flop: FDR
-  port map (  D => flag_enable_value,
-              Q => flag_enable,
-              R => active_interrupt,
-              C => clk);
-
-  register_enable_flop: FDR
-  port map (  D => register_enable_value,
-              Q => register_enable,
-              R => active_interrupt,
-              C => clk);
-
-  spm_enable_lut: LUT6_2
-  generic map (INIT => X"8000000020000000")
-  port map( I0 => instruction(13),
-            I1 => instruction(14),
-            I2 => instruction(17),
-            I3 => strobe_type,
-            I4 => t_state(1),
-            I5 => '1',
-            O5 => k_write_strobe_value,
-            O6 => spm_enable_value);
-
-  k_write_strobe_flop: FDR
-  port map (  D => k_write_strobe_value,
-              Q => k_write_strobe,
-              R => active_interrupt,
-              C => clk);
-
-  spm_enable_flop: FDR
-  port map (  D => spm_enable_value,
-              Q => spm_enable,
-              R => active_interrupt,
-              C => clk);
-
-  read_strobe_lut: LUT6_2
-  generic map (INIT => X"4000000001000000")
-  port map( I0 => instruction(13),
-            I1 => instruction(14),
-            I2 => instruction(17),
-            I3 => strobe_type,
-            I4 => t_state(1),
-            I5 => '1',
-            O5 => read_strobe_value,
-            O6 => write_strobe_value);
-
-  write_strobe_flop: FDR
-  port map (  D => write_strobe_value,
-              Q => write_strobe,
-              R => active_interrupt,
-              C => clk);
-
-  read_strobe_flop: FDR
-  port map (  D => read_strobe_value,
-              Q => read_strobe,
-              R => active_interrupt,
-              C => clk);
+  dec_str_en: strobe_enables_decode
+    port map(
+      clk => clk,
+      instruction => instruction,
+      t_state => t_state,
+      active_interrupt => active_interrupt,
+      strobe_type => strobe_type,
+  
+      flag_enable => flag_enable,
+      register_enable => register_enable,
+      write_strobe => write_strobe,
+      k_write_strobe => k_write_strobe,
+      spm_enable => spm_enable);
 
   --
   -------------------------------------------------------------------------------------------
