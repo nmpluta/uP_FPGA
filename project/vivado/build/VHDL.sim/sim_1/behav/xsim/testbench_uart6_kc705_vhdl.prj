@@ -3,8 +3,6 @@ vhdl xil_defaultlib  \
 "../../../../../../rtl/auto_baud_rate_control.vhd" \
 "../../../../../../rtl/kcpsm6.vhd" \
 "../../../../../../rtl/uart6_kc705.vhd" \
-"../../../../../../rtl/uart_rx6.vhd" \
-"../../../../../../rtl/uart_tx6.vhd" \
 "../../../../../../sim/testbench_uart6_kc705.vhd" \
 
 # Do not sort compile order
