@@ -1,0 +1,36 @@
+       ; KCPSM6 Program
+       ; Author - Gandhi Puvvada
+       ; Date: 4/7/2017, 3/1/2020
+       ;**************************************************************************************
+       ; Port definitions
+       ;**************************************************************************************
+       ;ports
+       ;*************************************************************************************
+       ;
+       ; Though in this demo we are not using all these ports, let us keep these definitions for future labs.
+       CONSTANT Dividend_Divisor, 00       ;port00 used for loading info of Dividend and Divisor
+       ; CONSTANT Control_signal,      01    ;port01 used for loading info of Reset(BtnU), Start and ACK signals
+       CONSTANT Quotient_Reminder, 00      ;port00 used for outputting Quotient and Remainder to LEDs
+       ; CONSTANT Current_State,       01    ;port01 used for outputting current state info (Initial (QI), Compute (QC) and Done (QD)) to LEDs
+       ;
+       CONSTANT pb_input, 01               ; port01 used for loading info of push buttons BtnL BtnR BtnU BtnD
+       CONSTANT led_output, 01             ; port01 used for outputting Push Button info to leds
+       CONSTANT Switch_Data_Input, 02      ; port02 used for loading info of Switches SW7-0
+       CONSTANT SSD_Output, 02             ; port02 used for outputting Switch Info to 7 Segment Display
+       CONSTANT interrupt_cause, 03        ; port03 used for loading info of interrupt cause
+       CONSTANT interrupt_acknowledged, 03 ; port03 used for outputting acknowledged interrupt
+       ;**************************************************************************************
+       ;**************************************************************************************
+       ;MAIN PROGRAM
+       ;**************************************************************************************
+       ;
+start: 
+       INPUT s0, Switch_Data_Input         ; Read the 8 switches into general purpose register s0
+       OUTPUT s0, led_output               ; send switches info from s0 to the 8 leds
+ exit: JUMP start                          ; keep repeating the same
+       ;****************************************************************************************
+       ;Interrupt subroutine (ISR)
+       ;****************************************************************************************
+       ;**************************************************************************************
+       ;Interrupt Vector
+       ;**************************************************************************************
