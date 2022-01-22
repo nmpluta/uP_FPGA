@@ -89,6 +89,7 @@ architecture behavior of testbench_uart6_kc705 is
 
   component uart6_kc705
   Port (
+  Ld        : out std_logic_vector(7 downto 0);
          clk200_p : in std_logic;
          clk200_n : in std_logic);
   end component;
@@ -104,6 +105,7 @@ architecture behavior of testbench_uart6_kc705 is
 
 signal clk200_p : std_logic := '0';
 signal clk200_n : std_logic := '1';
+signal Ld       :  std_logic_vector(7 downto 0);
 
 -- Signals used for test purposes only.
 
@@ -126,6 +128,7 @@ begin
 
    uut: uart6_kc705
    port map (
+              Ld       => Ld,
               clk200_p => clk200_p,
               clk200_n => clk200_n
               );

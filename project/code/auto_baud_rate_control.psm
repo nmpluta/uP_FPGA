@@ -6,13 +6,14 @@ init:
       LOAD s0, 00 ; load register 0-6 with FF value
       LOAD s1, counter_compare_treshold ; load constant value to reg s1
       LOAD s2, 60
-      LOAD s3, 00 ; reg for outputs 
-      LOAD s4, 01 ; const 1 
-      LOAD s5, 00 ; const 0
+      LOAD s3, 00 ; reg for outputs
+      LOAD s4, 01 ; const 1
+      LOAD s5, FF ; const FF
       LOAD s6, FF
+      OUTPUT s5, led_output
       JUMP start
-start:      
-      ADD s0, 01 ; 
+start:
+      ADD s0, 01 ;
       COMPARE s1, s0
 	JUMP C, regdiff ; go to regdiff sub
       JUMP start; single loop end

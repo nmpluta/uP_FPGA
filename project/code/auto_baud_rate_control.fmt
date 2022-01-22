@@ -7,8 +7,9 @@
          LOAD s2, 60
          LOAD s3, 00                           ; reg for outputs
          LOAD s4, 01                           ; const 1
-         LOAD s5, 00                           ; const 0
+         LOAD s5, FF                           ; const FF
          LOAD s6, FF
+         OUTPUT s5, led_output
          JUMP start
   start: 
          ADD s0, 01                            ;

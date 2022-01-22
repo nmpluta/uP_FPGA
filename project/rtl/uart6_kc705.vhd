@@ -93,7 +93,7 @@ begin
                     port_id                 => port_id,
                     write_strobe            => write_strobe,
                     k_write_strobe          => k_write_strobe,
-                    out_port                => Ld,
+                    out_port                => out_port,
                     read_strobe             => read_strobe,
                     in_port                 => (X"00"),
                     interrupt               => '0',
@@ -115,4 +115,24 @@ begin
                     rdl                   => rdl,
                     clk                   => clk
             );
+
+
+  output_ports: process(clk)
+  begin
+    if clk'event and clk = '1' then
+
+        -- 'write_strobe' is used to qualify all writes to general output ports.
+        if write_strobe = '1' then
+
+          -- Write to UART at port addresses 01 hex
+          -- See below this clocked process for the combinatorial decode required.
+
+          -- Write to 'set_baud_rate' at port addresses 02 hex
+          -- This value is set by KCPSM6 to define the BAUD rate of the UART.
+          -- See the 'UART baud rate' section for details.
+          Ld <= out_port;
+
+        end if;
+      end if;
+      end process;
 end Behavioral;
