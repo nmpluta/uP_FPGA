@@ -1,6 +1,6 @@
 --
 -------------------------------------------------------------------------------------------
--- Copyright © 2014, Xilinx, Inc.
+-- Copyright ï¿½ 2014, Xilinx, Inc.
 -- This file contains confidential and proprietary information of Xilinx, Inc. and is
 -- protected under U.S. and international copyright and other intellectual property laws.
 -------------------------------------------------------------------------------------------
@@ -41,10 +41,10 @@
 -- 25th June 2014
 --
 -- Ken Chapman
--- 
--- This test bench will simply provide a clock to the design and enable the KCPSM6 code 
--- to be executed and observed. The following simulation only signals can be displayed 
--- in the waveforms window to really see what KCPSM6 is doing.  
+--
+-- This test bench will simply provide a clock to the design and enable the KCPSM6 code
+-- to be executed and observed. The following simulation only signals can be displayed
+-- in the waveforms window to really see what KCPSM6 is doing.
 --
 --  'kcpsm6_opcode' - A string displaying the instruction being executed.
 --                    e.g. "LOAD s7, s4        "
@@ -57,13 +57,13 @@
 --                                              Interrupts are disabled.
 --                                              Internal reset is active.
 --
---  'sim_s0' through to 'sim_sF' 
---                - Contents of registers s0 through to sF.  
+--  'sim_s0' through to 'sim_sF'
+--                - Contents of registers s0 through to sF.
 --
---  'sim_spm00' through to 'sim_spmFF' 
---                - Contents of scratch pad memory locations 00 through to FF.  
+--  'sim_spm00' through to 'sim_spmFF'
+--                - Contents of scratch pad memory locations 00 through to FF.
 --
--- 
+--
 -------------------------------------------------------------------------------------------
 --
 
@@ -72,82 +72,82 @@ use ieee.std_logic_1164.ALL;
 use ieee.numeric_std.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
--- 
+--
 -------------------------------------------------------------------------------------------
 --
 
 entity testbench_uart6_kc705 is
 end testbench_uart6_kc705;
 
--- 
+--
 -------------------------------------------------------------------------------------------
 --
 
-architecture behavior of testbench_uart6_kc705 is 
+architecture behavior of testbench_uart6_kc705 is
 
   -- Design to be tested
 
-  component uart6_kc705 
-  Port (  uart_rx : in std_logic;
-          uart_tx : out std_logic;
+  component uart6_kc705
+  Port (
+  Ld        : out std_logic_vector(7 downto 0);
          clk200_p : in std_logic;
          clk200_n : in std_logic);
   end component;
 
--- 
+--
 -------------------------------------------------------------------------------------------
 --
 
 -- Signals to connect to design being tested
 --
--- Initial values include the UART receiving a High level which is 
+-- Initial values include the UART receiving a High level which is
 -- the normal level for an inactive serial line that is connected.
 
-signal  uart_rx : std_logic := '1';
-signal  uart_tx : std_logic;
 signal clk200_p : std_logic := '0';
 signal clk200_n : std_logic := '1';
+signal Ld       :  std_logic_vector(7 downto 0);
 
--- Signals used for test purposes only. 
+-- Signals used for test purposes only.
 
 signal  max_cycles : integer := 5000;
 signal cycle_count : integer := 1;
 
--- 
+--
 -------------------------------------------------------------------------------------------
 --
 
 begin
 
-  -- 
+  --
   -----------------------------------------------------------------------------------------
   --
   -- Instantiate the design under test
-  -- 
+  --
   -----------------------------------------------------------------------------------------
   --
 
-   uut: uart6_kc705 
-   port map (  uart_rx => uart_rx,
-               uart_tx => uart_tx,
+   uut: uart6_kc705
+   port map (
+              Ld       => Ld,
               clk200_p => clk200_p,
-              clk200_n => clk200_n);
+              clk200_n => clk200_n
+              );
 
-  -- 
+  --
   -----------------------------------------------------------------------------------------
   --
-  -- Simulation 
-  -- 
+  -- Simulation
+  --
   -----------------------------------------------------------------------------------------
   --
   -- Simulate a 200MHz differential clock as provided on the KC705 board.
   --
-  -- The test bench simulates for a specified number of clock cycles previously defined by 
-  -- 'max_cycles'. The current clock cycle is defined by 'cycle_count'. In this way the 
+  -- The test bench simulates for a specified number of clock cycles previously defined by
+  -- 'max_cycles'. The current clock cycle is defined by 'cycle_count'. In this way the
   -- simulation as a pre-defined duration and stimulus can be defined relative to a clock
   -- cycles rather than using absolute times.
   --
- 
+
   simulate_clock: process
     begin
 
@@ -155,16 +155,16 @@ begin
       while cycle_count < max_cycles loop
 
         -- 'clk200_p' starts Low and 'clk200_n' starts High.
-        -- After 2.5ns the first transition occurs and 
+        -- After 2.5ns the first transition occurs and
         --   'clk200_p' goes High and'clk200_n' goes Low.
-    
+
         wait for 2.5 ns;
         clk200_p <= '1';
         clk200_n <= '0';
 
-        -- After another 2.5ns the second transition occurs and 
+        -- After another 2.5ns the second transition occurs and
         --   'clk200_p' returns to Low and 'clk200_n' returns to Low.
-    
+
         wait for 2.5 ns;
         clk200_p <= '0';
         clk200_n <= '1';
@@ -176,12 +176,12 @@ begin
       end loop;
 
       wait; -- end of simulation.
-  
+
   end process simulate_clock;
 
 end;
 
--- 
+--
 -------------------------------------------------------------------------------------------
 --
 -- End of file 'testbench_uart6_kc705.vhd'.
