@@ -1,0 +1,10 @@
+0.6
+2017.3
+Oct  4 2017
+20:11:37
+E:/Studia/S5/PUL/prj/uP_FPGA/project/rtl/auto_baud_rate_control.vhd,1642872312,vhdl,,,,auto_baud_rate_control;jtag_loader_6;jtag_loader_pkg,,,,,,,,
+E:/Studia/S5/PUL/prj/uP_FPGA/project/rtl/kcpsm6.vhd,1642864679,vhdl,,,,kcpsm6,,,,,,,,
+E:/Studia/S5/PUL/prj/uP_FPGA/project/rtl/uart6_kc705.vhd,1642864679,vhdl,,,,uart6_kc705,,,,,,,,
+E:/Studia/S5/PUL/prj/uP_FPGA/project/rtl/uart_rx6.vhd,1642864679,vhdl,,,,uart_rx6,,,,,,,,
+E:/Studia/S5/PUL/prj/uP_FPGA/project/rtl/uart_tx6.vhd,1642864679,vhdl,,,,uart_tx6,,,,,,,,
+E:/Studia/S5/PUL/prj/uP_FPGA/project/sim/testbench_uart6_kc705.vhd,1642864679,vhdl,,,,testbench_uart6_kc705,,,,,,,,

@@ -1,11 +1,10 @@
-
+JUMP start
 start:
 	LOAD s0, AA ; load register s0 = 10101010, initial value of s0 register FF
 	LOAD s1, s0 ; load register s1 with value of register s0
 	XOR s0, FF  ; invert contents s0 = 01010101 AA
 	ADD s0, 01 ; incremnt by 1 register s0
-	COMPARE s0, s1 ; czy COMPARE ?
+	COMPARE s0, s1 ; compare value of s0 and s1 registers
 	JUMP start  ; return to begin of program
-	
 end:
 	JUMP start
