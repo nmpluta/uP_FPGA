@@ -246,7 +246,6 @@ begin
               Q => t_state(2),
               C => clk);
 
-
   int_enable_type_lut: LUT6_2
   generic map (INIT => X"0010000000000800")
   port map( I0 => instruction(13),
@@ -363,7 +362,7 @@ begin
       clk => clk,
       instruction => instruction,
       t_state => t_state,
-      active_interrupt => active_interrupt,
+      active_interrupt => '0',
       strobe_type => strobe_type,
   
       flag_enable => flag_enable,
@@ -443,7 +442,6 @@ begin
   port map (  D => arith_carry_value,
               Q => arith_carry,
               C => clk);
-
 
   shift_carry_lut: LUT6
   generic map (INIT => X"FFFFAACCF0F0F0F0")
@@ -571,7 +569,6 @@ begin
 
   register_vector <= sx(3 downto 0) & sy;
 
-
   address_loop: for i in 0 to 11 generate
   begin
 
@@ -649,14 +646,12 @@ begin
     -------------------------------------------------------------------------------------------
     --
 
-
     pc_flop: FDRE
     port map (  D => pc_value(i),
                 Q => pc(i),
                 R => internal_reset,
                CE => t_state(1),
                 C => clk);
-
 
     lsb_pc: if i=0 generate
     begin
