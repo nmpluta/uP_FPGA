@@ -16,7 +16,6 @@ entity kcpsm6 is
                            port_id : out std_logic_vector(7 downto 0);
                       write_strobe : out std_logic;
                        read_strobe : out std_logic;
-                             sleep : in std_logic;
                              reset : in std_logic;
                                clk : in std_logic);
   end kcpsm6;
@@ -70,7 +69,6 @@ signal              run_value : std_logic;
 signal                    run : std_logic;
 signal   internal_reset_value : std_logic;
 signal         internal_reset : std_logic;
-signal             sync_sleep : std_logic;
 
 --
 -- Arithmetic and Logical Functions
@@ -188,16 +186,11 @@ begin
               Q => internal_reset,
               C => clk);
 
-  sync_sleep_flop: FD
-  port map (  D => sleep,
-              Q => sync_sleep,
-              C => clk);
-
   t_state_lut: LUT6_2
   generic map (INIT => X"0083000B00C4004C")
   port map( I0 => t_state(1),
             I1 => t_state(2),
-            I2 => sync_sleep,
+            I2 => '0',
             I3 => internal_reset,
             I4 => '0',
             I5 => '1',
