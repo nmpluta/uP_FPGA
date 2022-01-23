@@ -35,6 +35,7 @@ proc attach_rtl_files {} {
                 rtl/strobe_enables_decode.vhd
                 rtl/program_counter_decode.vhd
                 rtl/program_counter.vhd
+                rtl/arithmetic_logic_unit.vhd
         }
 
         # read_verilog {
