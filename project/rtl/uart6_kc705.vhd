@@ -95,7 +95,7 @@ begin
                     k_write_strobe          => k_write_strobe,
                     out_port                => out_port,
                     read_strobe             => read_strobe,
-                    in_port                 => (X"00"),
+                    in_port                 => (X"01"),
                     interrupt               => '0',
                     sleep                   => '0',
                     reset                   => rdl,

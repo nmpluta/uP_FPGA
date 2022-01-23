@@ -1,15 +1,17 @@
 CONSTANT counter_compare_treshold, 10
-CONSTANT led_output, 01; port01 used for outputting Push Button info to leds
+CONSTANT led_output, 01; port01 used for output
+CONSTANT data_input, 01; port01 used for input
 
       JUMP init
 init:
-      LOAD s0, 00 ; coouter for loop 1
+      LOAD s0, 00 ; couner for loop 1
       LOAD s1, counter_compare_treshold ; load constant value to reg s1
       LOAD s2, 60
       LOAD s3, 00 ; reg for outputs
-      LOAD s4, 01 ; const 1
+      LOAD s4, 01 ; const 01
       LOAD s5, FF ; const FF
       LOAD s6, 00 ; counter for loop 2
+      INPUT s1, data_input ; load data imput to register s1
       OUTPUT s5, led_output
       JUMP loop_1
 loop_1:

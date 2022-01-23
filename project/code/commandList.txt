@@ -1,0 +1,28 @@
+command List:
+ADD sX, kk 
+ADD sX, sY
+ADDCY sX, kk 
+ADDCY sX, sY
+AND sX, kk 
+AND sX, sY
+COMPARE sX, kk 
+COMPARE sX, sY
+INPUT sX, (sY) 
+INPUT sX, pp
+JUMP aaa 
+JUMP C, aaa 
+JUMP NC, aaa 
+JUMP NZ, aaa 
+JUMP Z, aaa
+LOAD sX, kk 
+LOAD sX, sY
+OR sX, kk 
+OR sX, sY
+OUTPUT sX, (sY) 
+OUTPUT sX, pp
+SUB sX, kk 
+SUB sX, sY
+SUBCY sX, kk 
+SUBCY sX, sY
+XOR sX, kk 
+XOR sX, sY

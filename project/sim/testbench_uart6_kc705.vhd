@@ -107,15 +107,16 @@ signal clk200_p : std_logic := '0';
 signal clk200_n : std_logic := '1';
 signal Ld       :  std_logic_vector(7 downto 0);
 
+
 -- Signals used for test purposes only.
 
 signal  max_cycles : integer := 5000;
 signal cycle_count : integer := 1;
+signal input_value : integer := 1;
 
 --
 -------------------------------------------------------------------------------------------
 --
-
 begin
 
   --
@@ -172,6 +173,10 @@ begin
         -- This completes once full clock cycle so the cycle counter is incremented.
 
         cycle_count <= cycle_count + 1;
+        
+        if cycle_count % 300 = '0' begin
+            input_value <= input_value + 1;
+        end
 
       end loop;
 
