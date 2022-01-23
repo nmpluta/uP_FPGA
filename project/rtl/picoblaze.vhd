@@ -6,9 +6,7 @@ use IEEE.STD_LOGIC_UNSIGNED.ALL;
 use UNISIM.VCOMPONENTS.ALL;
 
 entity picoblaze is
-  generic(                 hwbuild : std_logic_vector(7 downto 0) := X"00";
-                  interrupt_vector : std_logic_vector(11 downto 0) := X"3FF";
-           scratch_pad_memory_size : integer := 64);
+  generic(                 hwbuild : std_logic_vector(7 downto 0) := X"00");
   port (                   address : out std_logic_vector(11 downto 0);
                        instruction : in std_logic_vector(17 downto 0);
                        bram_enable : out std_logic;
@@ -62,8 +60,6 @@ architecture low_level_definition of picoblaze is
     end component;
 
   component program_counter is
-    generic(
-      interrupt_vector : std_logic_vector(11 downto 0) := X"3FF");
     port(
       clk : in std_logic;
       internal_reset : in std_logic;
@@ -272,16 +268,19 @@ begin
     output_data: if (i rem 2)=0 generate
     begin
 
-      pc_vector_mux_lut: LUT6_2
-      generic map (INIT => X"FF00F0F0CCCCAAAA")
+      pc_vector_mux_lut: LUT3
+      generic map (INIT => X"0A")
       port map( I0 => instruction(i),
-                I1 => '0',
-                I2 => instruction(i+1),
-                I3 => '0',
-                I4 => instruction(12),
-                I5 => '1',
-                O5 => pc_vector(i),
-                O6 => pc_vector(i+1));
+                I1 => instruction(i+1),
+                I2 => instruction(12),
+                O => pc_vector(i));
+      
+      pc_vector_mux_lut_nxt: LUT3
+      generic map (INIT => X"0C")
+      port map( I0 => instruction(i),
+                I1 => instruction(i+1),
+                I2 => instruction(12),
+                O => pc_vector(i+1));
 
     end generate output_data;
   end generate address_loop;
@@ -292,8 +291,6 @@ begin
   -- Program Counter
   --
   prog_count: program_counter
-  generic map(
-    interrupt_vector => X"3FF")
   port map(
     clk => clk,
     internal_reset => internal_reset,
