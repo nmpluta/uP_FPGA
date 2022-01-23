@@ -10,10 +10,10 @@
         LOAD s4, 01                           ; const 01
         LOAD s5, FF                           ; const FF
         LOAD s6, 00                           ; counter for loop 2
-        INPUT s1, data_input                  ; load data imput to register s1
         OUTPUT s5, led_output
         JUMP loop_1
 loop_1: 
+        INPUT s1, data_input                  ; load data imput to register s1
         OUTPUT s5, led_output
         AND s4, s4                            ; clear CARRY flag
         ADD s0, 01                            ;
@@ -22,6 +22,7 @@ loop_1:
         JUMP C, loop_2                        ; go to loop_2 sub
         JUMP loop_1                           ; single loop end
 loop_2: 
+        INPUT s1, data_input                  ; load data imput to register s1
         OUTPUT s4, led_output
         AND s4, s4                            ; clear CARRY flag
         ADD s6, 01                            ;
