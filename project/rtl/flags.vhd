@@ -52,16 +52,9 @@ architecture arch of flags is
   -------------------------------------------------------------------------------------------
   --
 begin
-        arith_carry_xorcy: XORCY
-        port map(
-                        LI => '0',
-                        CI => carry_arith_logical,
-                        O => arith_carry_value
-                );
-
         arith_carry_flop: FD
         port map (
-                        D => arith_carry_value,
+                        D => carry_arith_logical,
                         Q => arith_carry,
                         C => clk
                 );
