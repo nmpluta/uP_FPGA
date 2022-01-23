@@ -40,21 +40,21 @@
 #
 # KC705 Board (www.xilinx.com) Rev 1.1
 #
-# XC7K325T-1FFG900 Device 
+# XC7K325T-1FFG900 Device
 #
 # Ken Chapman - Xilinx Ltd
-# 
+#
 # 3rd June 2014
 #
 #
 # DEVICE
 # ------
 #
-# On the KC705 board, bank 0 and the CFGBVS pin are connected to a 2.5v supply. 
-# 
+# On the KC705 board, bank 0 and the CFGBVS pin are connected to a 2.5v supply.
+#
 # Configuration voltage supplied to bank 0
 # Specified as an actual voltage value
-set_property CONFIG_VOLTAGE 2.5 [current_design]
+set_property CONFIG_VOLTAGE 3.3 [current_design]
 #
 # Configuration Bank Voltage Selection (CFGBVS)
 # Specified as VCCO (as in this case) or GND
@@ -93,12 +93,12 @@ set_clock_groups -name my_async_clocks -asynchronous -group [get_clocks clk200] 
 #
 #
 set_max_delay 50 -from [get_ports uart_rx] -to [get_clocks clk200] -quiet -datapath_only
-set_min_delay  0 -from [get_ports uart_rx] -to [get_clocks clk200] -quiet 
+set_min_delay  0 -from [get_ports uart_rx] -to [get_clocks clk200] -quiet
 #set_max_delay 50 -from [get_ports cpu_rst] -to [get_clocks clk200] -quiet -datapath_only
-#set_min_delay  0 -from [get_ports cpu_rst] -to [get_clocks clk200] -quiet 
+#set_min_delay  0 -from [get_ports cpu_rst] -to [get_clocks clk200] -quiet
 #
 set_max_delay 50 -from [get_clocks clk200] -to [get_ports uart_tx] -quiet -datapath_only
-set_min_delay  0 -from [get_clocks clk200] -to [get_ports uart_tx] -quiet 
+set_min_delay  0 -from [get_clocks clk200] -to [get_ports uart_tx] -quiet
 #
 #
 #
@@ -108,38 +108,33 @@ set_min_delay  0 -from [get_clocks clk200] -to [get_ports uart_tx] -quiet
 #
 # 200MHz Differential Clock
 # -------------------------
-# 
+#
 set_property PACKAGE_PIN AD12 [get_ports clk200_p]
 set_property IOSTANDARD DIFF_SSTL15 [get_ports clk200_p]
 #
 set_property PACKAGE_PIN AD11 [get_ports clk200_n]
 set_property IOSTANDARD DIFF_SSTL15 [get_ports clk200_n]
-#
-#
-# USB-UART
-# --------
-#
-set_property PACKAGE_PIN M19 [get_ports uart_rx]
-set_property IOSTANDARD LVCMOS25 [get_ports uart_rx]
-#
-set_property PACKAGE_PIN K24 [get_ports uart_tx]
-set_property IOSTANDARD LVCMOS25 [get_ports uart_tx]
-set_property SLEW SLOW [get_ports uart_tx]
-set_property DRIVE 4 [get_ports uart_tx]
-#
-#
-# CPU_RST press switch (SW7)
-# --------------------------
-#
-# This input is not used by this design but the constraints have been provided for 
-# additional reference.
-#
-#    Active High
-#
-# set_property PACKAGE_PIN AB7 [get_ports cpu_rst]
-# set_property IOSTANDARD LVCMOS15 [get_ports cpu_rst]
-#
-#
+
+set_property -dict { PACKAGE_PIN V17   IOSTANDARD LVCMOS15 } [get_ports {sw0}]
+set_property -dict { PACKAGE_PIN V16   IOSTANDARD LVCMOS33 } [get_ports {sw[1]}]
+set_property -dict { PACKAGE_PIN W16   IOSTANDARD LVCMOS33 } [get_ports {sw[2]}]
+set_property -dict { PACKAGE_PIN W17   IOSTANDARD LVCMOS33 } [get_ports {sw[3]}]
+set_property -dict { PACKAGE_PIN W15   IOSTANDARD LVCMOS33 } [get_ports {sw[4]}]
+set_property -dict { PACKAGE_PIN V15   IOSTANDARD LVCMOS33 } [get_ports {sw[5]}]
+set_property -dict { PACKAGE_PIN W14   IOSTANDARD LVCMOS33 } [get_ports {sw[6]}]
+set_property -dict { PACKAGE_PIN W13   IOSTANDARD LVCMOS33 } [get_ports {sw[7]}]
+
+
+# LEDs
+set_property -dict { PACKAGE_PIN U16   IOSTANDARD LVCMOS33 } [get_ports {Ld[0]}]
+set_property -dict { PACKAGE_PIN E19   IOSTANDARD LVCMOS33 } [get_ports {Ld[1]}]
+set_property -dict { PACKAGE_PIN U19   IOSTANDARD LVCMOS33 } [get_ports {Ld[2]}]
+set_property -dict { PACKAGE_PIN V19   IOSTANDARD LVCMOS33 } [get_ports {Ld[3]}]
+set_property -dict { PACKAGE_PIN W18   IOSTANDARD LVCMOS33 } [get_ports {Ld[4]}]
+set_property -dict { PACKAGE_PIN U15   IOSTANDARD LVCMOS33 } [get_ports {Ld[5]}]
+set_property -dict { PACKAGE_PIN U14   IOSTANDARD LVCMOS33 } [get_ports {Ld[6]}]
+set_property -dict { PACKAGE_PIN V14   IOSTANDARD LVCMOS33 } [get_ports {Ld[7]}]
+
 #------------------------------------------------------------------------------------------
 # End of File
 #------------------------------------------------------------------------------------------

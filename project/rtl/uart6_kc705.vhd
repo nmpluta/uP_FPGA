@@ -8,6 +8,7 @@ use unisim.vcomponents.all;
 
 entity uart6_kc705 is
         Port    (
+                        Sw        : in  std_logic_vector(7 downto 0);
                         Ld        : out std_logic_vector(7 downto 0);
                         clk200_p  : in std_logic;
                         clk200_n  : in std_logic
@@ -67,6 +68,7 @@ signal         kcpsm6_reset : std_logic;
 signal                  rdl : std_logic;
 
 begin
+  -- inputs <= sw;
 
   diff_clk_buffer: IBUFGDS
     port map (  I => clk200_p,
@@ -90,7 +92,7 @@ begin
                     write_strobe            => write_strobe,
                     out_port                => out_port,
                     read_strobe             => read_strobe,
-                    in_port                 => (X"00"),
+                    in_port                 => in_port,
                     sleep                   => '0',
                     reset                   => rdl,
                     clk                     => clk
@@ -111,22 +113,17 @@ begin
             );
 
 
-  output_ports: process(clk)
-  begin
-    if clk'event and clk = '1' then
+        output_ports: process(clk)
+        begin
+                if rising_edge(clk) and (write_strobe = '1') then
+                        Ld <= out_port;
+                end if;
+        end process;
 
-        -- 'write_strobe' is used to qualify all writes to general output ports.
-        if write_strobe = '1' then
-
-          -- Write to UART at port addresses 01 hex
-          -- See below this clocked process for the combinatorial decode required.
-
-          -- Write to 'set_baud_rate' at port addresses 02 hex
-          -- This value is set by KCPSM6 to define the BAUD rate of the UART.
-          -- See the 'UART baud rate' section for details.
-          Ld <= out_port;
-
-        end if;
-      end if;
-      end process;
+        inpput_ports: process(clk)
+        begin
+                if rising_edge(clk) and (read_strobe = '1') then
+                        in_port <= Sw;
+                end if;
+        end process;
 end Behavioral;
