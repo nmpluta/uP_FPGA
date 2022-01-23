@@ -26,7 +26,7 @@ proc attach_rtl_files {} {
         }
 
         read_vhdl {
-                rtl/uart6_kc705.vhd
+                rtl/picoblaze_top.vhd
                 rtl/kcpsm6.vhd
                 rtl/auto_baud_rate_control.vhd
                 rtl/alu_decode.vhd
@@ -65,7 +65,7 @@ proc attach_sim_files {} {
         #  }
 
         add_files -fileset sim_1 {
-                sim/testbench_uart6_kc705.vhd
+                sim/testbench_picoblaze.vhd
 
         }
         #--------------------------------------------------------
@@ -166,7 +166,7 @@ if {[lindex $argv 0] == "simulation"} {
 	launch_simulation
         #run all
         # add_wave {{/testbench_uart6_kc705/uut/set_baud_rate}} {{/testbench_uart6_kc705/uut/en_16_x_baud}}
-        add_wave {{/testbench_uart6_kc705/uut/processor/address}}
+        #add_wave {{/testbench_uart6_kc705/uut/processor/address}}
 
         start_gui
         run all
