@@ -61,8 +61,6 @@ architecture low_level_definition of picoblaze is
     end component;
 
   component program_counter is
-    generic(
-      interrupt_vector : std_logic_vector(11 downto 0) := X"3FF");
     port(
       clk : in std_logic;
       internal_reset : in std_logic;
@@ -403,8 +401,6 @@ begin
   -- Program Counter
   --
   prog_count: program_counter
-  generic map(
-    interrupt_vector => X"3FF")
   port map(
     clk => clk,
     internal_reset => internal_reset,
