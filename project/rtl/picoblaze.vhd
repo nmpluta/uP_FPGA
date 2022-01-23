@@ -6,17 +6,18 @@ use IEEE.STD_LOGIC_UNSIGNED.ALL;
 use UNISIM.VCOMPONENTS.ALL;
 
 entity picoblaze is
-  generic(                 hwbuild : std_logic_vector(7 downto 0) := X"00");
-  port (                   address : out std_logic_vector(11 downto 0);
-                       instruction : in std_logic_vector(17 downto 0);
-                       bram_enable : out std_logic;
-                           in_port : in std_logic_vector(7 downto 0);
-                           out_port : out std_logic_vector(7 downto 0);
-                           port_id : out std_logic_vector(7 downto 0);
-                      write_strobe : out std_logic;
-                       read_strobe : out std_logic;
-                             reset : in std_logic;
-                               clk : in std_logic);
+        Port(
+                        clk             : in std_logic;
+                        reset           : in std_logic;
+                        in_port         : in std_logic_vector(7 downto 0);
+                        instruction     : in std_logic_vector(17 downto 0);
+                        bram_enable     : out std_logic;
+                        write_strobe    : out std_logic;
+                        read_strobe     : out std_logic;
+                        out_port        : out std_logic_vector(7 downto 0);
+                        port_id         : out std_logic_vector(7 downto 0);
+                        address         : out std_logic_vector(11 downto 0)
+        );
   end picoblaze;
 --
 -------------------------------------------------------------------------------------------
@@ -86,7 +87,7 @@ architecture low_level_definition of picoblaze is
         end component;
 
 
-    component state_control
+        component state_control
         port(
                 clk                     : in std_logic;
                 reset                   : in std_logic;
@@ -107,59 +108,65 @@ architecture low_level_definition of picoblaze is
 			carry_arith_logical : out std_logic_vector(7 downto 0));
 		end component;
 
---
--- State Machine and Interrupt
---
-signal t_state : std_logic_vector(2 downto 1);
-signal internal_reset : std_logic;
+        component adress_generator
+        port(
+                instruction           : in std_logic_vector(17 downto 0);
+                pc_vector             : out std_logic_vector(11 downto 0)
+        );
+        end component;
+        --
+        -- State Machine and Interrupt
+        --
+        signal t_state : std_logic_vector(2 downto 1);
+        signal internal_reset : std_logic;
 
---
--- Arithmetic and Logical Functions
---
-signal arith_logical_sel : std_logic_vector(2 downto 0);
-signal arith_carry_in : std_logic;
-signal arith_carry_value : std_logic;
-signal arith_carry : std_logic;
-signal half_arith_logical : std_logic_vector(7 downto 0);
-signal logical_carry_mask : std_logic_vector(7 downto 0);
-signal carry_arith_logical : std_logic_vector(7 downto 0);
-signal arith_logical_value : std_logic_vector(7 downto 0);
-signal arith_logical_result : std_logic_vector(7 downto 0);
---
--- ALU structure
---
-signal alu_result : std_logic_vector(7 downto 0);
-signal alu_mux_sel : std_logic_vector(1 downto 0);
---
--- Strobes
---
-signal strobe_type : std_logic;
---
--- Flags
---
-signal flag_enable : std_logic;
-signal carry_flag : std_logic;
-signal zero_flag : std_logic;
+        --
+        -- Arithmetic and Logical Functions
+        --
+        signal arith_logical_sel : std_logic_vector(2 downto 0);
+        signal arith_carry_in : std_logic;
+        signal arith_carry_value : std_logic;
+        signal arith_carry : std_logic;
+        signal half_arith_logical : std_logic_vector(7 downto 0);
+        signal logical_carry_mask : std_logic_vector(7 downto 0);
+        signal carry_arith_logical : std_logic_vector(7 downto 0);
+        signal arith_logical_value : std_logic_vector(7 downto 0);
+        signal arith_logical_result : std_logic_vector(7 downto 0);
+        --
+        -- ALU structure
+        --
+        signal alu_result : std_logic_vector(7 downto 0);
+        signal alu_mux_sel : std_logic_vector(1 downto 0);
+        --
+        -- Strobes
+        --
+        signal strobe_type : std_logic;
+        --
+        -- Flags
+        --
+        signal flag_enable : std_logic;
+        signal carry_flag : std_logic;
+        signal zero_flag : std_logic;
 
---
--- Registers
---
-signal register_enable : std_logic;
-signal sx_addr : std_logic_vector(4 downto 0);
-signal sy_addr : std_logic_vector(4 downto 0);
-signal sx : std_logic_vector(7 downto 0);
-signal sy : std_logic_vector(7 downto 0);
---
--- Second Operand
---
-signal sy_or_kk : std_logic_vector(7 downto 0);
---
--- Program Counter
---
-signal pc_mode : std_logic_vector(2 downto 0);
-signal register_vector : std_logic_vector(11 downto 0);
-signal pc : std_logic_vector(11 downto 0);
-signal pc_vector : std_logic_vector(11 downto 0);
+        --
+        -- Registers
+        --
+        signal register_enable : std_logic;
+        signal sx_addr : std_logic_vector(4 downto 0);
+        signal sy_addr : std_logic_vector(4 downto 0);
+        signal sx : std_logic_vector(7 downto 0);
+        signal sy : std_logic_vector(7 downto 0);
+        --
+        -- Second Operand
+        --
+        signal sy_or_kk : std_logic_vector(7 downto 0);
+        --
+        -- Program Counter
+        --
+        signal pc_mode : std_logic_vector(2 downto 0);
+        signal register_vector : std_logic_vector(11 downto 0);
+        signal pc : std_logic_vector(11 downto 0);
+        signal pc_vector : std_logic_vector(11 downto 0);
 
 begin
 
@@ -222,19 +229,20 @@ begin
   -- Decoding for strobes and enables
   --
 
-  dec_str_en: strobe_enables_decode
-    port map(
-      clk => clk,
-      instruction => instruction,
-      t_state => t_state,
-      strobe_type => strobe_type,
+        dec_str_en: strobe_enables_decode
+        port map(
+                        clk             => clk,
+                        instruction     => instruction,
+                        t_state         => t_state,
+                        strobe_type     => strobe_type,
 
-      flag_enable => flag_enable,
-      register_enable => register_enable,
-      read_strobe => read_strobe,
-      write_strobe => write_strobe);
+                        flag_enable     => flag_enable,
+                        register_enable => register_enable,
+                        read_strobe     => read_strobe,
+                        write_strobe    => write_strobe
+                );
 
-    my_flags: flags
+        my_flags: flags
         port map(
                         clk                     => clk,
                         internal_reset          => internal_reset,
@@ -254,48 +262,31 @@ begin
   -- Prepare 12-bit vector from the sX and sY register outputs.
   --
 
-  address_loop: for i in 0 to 11 generate
-  begin
-
-    --
-    -------------------------------------------------------------------------------------------
-    --
-    -- Selection of vector to load program counter
-    --
-    -- instruction(12)
-    --              0  Constant aaa from instruction(11:0)
-    --              1  Return vector from stack
-    --
-    -- 'aaa' is used during 'JUMP aaa', 'JUMP c, aaa', 'CALL aaa' and 'CALL c, aaa'.
-    -- Return vector is used during 'RETURN', 'RETURN c', 'RETURN&LOAD' and 'RETURNI'.
-    --
-    --     6 x LUT6_2
-    --     12 x FD
-    --
-    -------------------------------------------------------------------------------------------
-    -- Pipeline output of the stack memory
-    --
+--     --
+--     -------------------------------------------------------------------------------------------
+--     --
+--     -- Selection of vector to load program counter
+--     --
+--     -- instruction(12)
+--     --              0  Constant aaa from instruction(11:0)
+--     --              1  Return vector from stack
+--     --
+--     -- 'aaa' is used during 'JUMP aaa', 'JUMP c, aaa', 'CALL aaa' and 'CALL c, aaa'.
+--     -- Return vector is used during 'RETURN', 'RETURN c', 'RETURN&LOAD' and 'RETURNI'.
+--     --
+--     --     6 x LUT6_2
+--     --     12 x FD
+--     --
+--     -------------------------------------------------------------------------------------------
+--     -- Pipeline output of the stack memory
+--     --
 
 
-    output_data: if (i rem 2)=0 generate
-    begin
-
-      pc_vector_mux_lut: LUT3
-      generic map (INIT => X"0A")
-      port map( I0 => instruction(i),
-                I1 => instruction(i+1),
-                I2 => instruction(12),
-                O => pc_vector(i));
-      
-      pc_vector_mux_lut_nxt: LUT3
-      generic map (INIT => X"0C")
-      port map( I0 => instruction(i),
-                I1 => instruction(i+1),
-                I2 => instruction(12),
-                O => pc_vector(i+1));
-
-    end generate output_data;
-  end generate address_loop;
+        my_adress_generator: adress_generator
+        port map(
+                        instruction     => instruction,
+                        pc_vector       => pc_vector
+                );
 
   --
   -------------------------------------------------------------------------------------------
