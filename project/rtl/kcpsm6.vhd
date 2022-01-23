@@ -16,8 +16,6 @@ entity kcpsm6 is
                            port_id : out std_logic_vector(7 downto 0);
                       write_strobe : out std_logic;
                        read_strobe : out std_logic;
-                         interrupt : in std_logic;
-                     interrupt_ack : out std_logic;
                              sleep : in std_logic;
                              reset : in std_logic;
                                clk : in std_logic);
@@ -96,8 +94,6 @@ signal      read_strobe_value : std_logic;
 signal       flag_enable_type : std_logic;
 signal      flag_enable_value : std_logic;
 signal            flag_enable : std_logic;
-signal      shift_carry_value : std_logic;
-signal            shift_carry : std_logic;
 signal       carry_flag_value : std_logic;
 signal             carry_flag : std_logic;
 
@@ -154,7 +150,6 @@ signal           stack_memory : std_logic_vector(11 downto 0);
 signal          return_vector : std_logic_vector(11 downto 0);
 signal     half_pointer_value : std_logic_vector(4 downto 0);
 signal     feed_pointer_value : std_logic_vector(4 downto 0);
-signal    stack_pointer_carry : std_logic_vector(4 downto 0);
 
 begin
 
@@ -174,7 +169,7 @@ begin
   generic map (INIT => X"FFFFF55500000EEE")
   port map( I0 => run,
             I1 => internal_reset,
-            I2 => stack_pointer_carry(4),
+            I2 => '0',
             I3 => t_state(2),
             I4 => reset,
             I5 => '1',
@@ -368,24 +363,9 @@ begin
               Q => arith_carry,
               C => clk);
 
-  shift_carry_lut: LUT6
-  generic map (INIT => X"FFFFAACCF0F0F0F0")
-  port map( I0 => sx(0),
-            I1 => sx(7),
-            I2 => '0',
-            I3 => instruction(3),
-            I4 => instruction(7),
-            I5 => instruction(16),
-             O => shift_carry_value);
-
-  shift_carry_flop: FD
-  port map (  D => shift_carry_value,
-              Q => shift_carry,
-              C => clk);
-
   carry_flag_lut: LUT6_2
   generic map (INIT => X"3333AACCF0AA0000")
-  port map( I0 => shift_carry,
+  port map( I0 => '0',
             I1 => arith_carry,
             I2 => '0',
             I3 => instruction(14),
@@ -670,31 +650,6 @@ begin
 
     end generate upper_pc;
   end generate address_loop;
-
-  stack_loop: for i in 0 to 4 generate
-  begin
-
-    lsb_stack: if i=0 generate
-    begin
-      stack_muxcy: MUXCY
-      port map( DI => feed_pointer_value(i),
-                CI => '0',
-                 S => half_pointer_value(i),
-                 O => stack_pointer_carry(i));
-
-    end generate lsb_stack;
-
-    upper_stack: if i>0 generate
-    begin
-      stack_muxcy: MUXCY
-      port map( DI => feed_pointer_value(i),
-                CI => stack_pointer_carry(i-1),
-                 S => half_pointer_value(i),
-                 O => stack_pointer_carry(i));
-
-    end generate upper_stack;
-  end generate stack_loop;
-
   --
   -------------------------------------------------------------------------------------------
   --
