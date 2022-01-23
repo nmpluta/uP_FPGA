@@ -26,9 +26,16 @@ entity kcpsm6 is
 -- Start of Main Architecture for kcpsm6
 --
 architecture low_level_definition of kcpsm6 is
---
--- declaration of alu_decode
---
+  component program_counter_decode
+    port(
+      clk : in std_logic;
+  
+      instruction :   in std_logic_vector(17 downto 0);
+      carry_flag :    in std_logic;
+      zero_flag :     in std_logic;
+      pc_mode :       out std_logic_vector(2 downto 0));
+  end component;
+
   component alu_decode
     port(
       clk : in std_logic;
@@ -133,9 +140,6 @@ signal               sy_or_kk : std_logic_vector(7 downto 0);
 --
 -- Program Counter
 --
-signal       pc_move_is_valid : std_logic;
-signal              move_type : std_logic;
-signal           returni_type : std_logic;
 signal                pc_mode : std_logic_vector(2 downto 0);
 signal        register_vector : std_logic_vector(11 downto 0);
 signal                half_pc : std_logic_vector(11 downto 0);
@@ -146,8 +150,6 @@ signal              pc_vector : std_logic_vector(11 downto 0);
 --
 -- Program Counter Stack
 --
-signal           stack_memory : std_logic_vector(11 downto 0);
-signal          return_vector : std_logic_vector(11 downto 0);
 signal     half_pointer_value : std_logic_vector(4 downto 0);
 signal     feed_pointer_value : std_logic_vector(4 downto 0);
 
@@ -222,49 +224,17 @@ begin
   --
   -------------------------------------------------------------------------------------------
   --
-  -- Decoding for Program Counter and Stack
+  -- Decoding for Program Counter
   --
-  pc_move_is_valid_lut: LUT6
-  generic map (INIT => X"5A3CFFFF00000000")
-  port map( I0 => carry_flag,
-            I1 => zero_flag,
-            I2 => instruction(14),
-            I3 => instruction(15),
-            I4 => instruction(16),
-            I5 => instruction(17),
-             O => pc_move_is_valid);
+  dec_PC: program_counter_decode
+    port map(
+      clk => clk,
 
-  move_type_lut: LUT6_2
-  generic map (INIT => X"7777027700000200")
-  port map( I0 => instruction(12),
-            I1 => instruction(13),
-            I2 => instruction(14),
-            I3 => instruction(15),
-            I4 => instruction(16),
-            I5 => '1',
-            O5 => returni_type,
-            O6 => move_type);
+      instruction => instruction,
+      carry_flag => carry_flag, 
+      zero_flag => zero_flag, 
+      pc_mode => pc_mode); 
 
-  pc_mode1_lut: LUT6_2
-  generic map (INIT => X"0000F000000023FF")
-  port map( I0 => instruction(12),
-            I1 => returni_type,
-            I2 => move_type,
-            I3 => pc_move_is_valid,
-            I4 => '0',
-            I5 => '1',
-            O5 => pc_mode(0),
-            O6 => pc_mode(1));
-
-  pc_mode2_lut: LUT6
-  generic map (INIT => X"FFFFFFFF00040000")
-  port map( I0 => instruction(12),
-            I1 => instruction(14),
-            I2 => instruction(15),
-            I3 => instruction(16),
-            I4 => instruction(17),
-            I5 => '0',
-             O => pc_mode(2));
 
   --
   -- Decoding for ALU
@@ -492,10 +462,6 @@ begin
     -- Pipeline output of the stack memory
     --
 
-    return_vector_flop: FD
-    port map (  D => stack_memory(i),
-                Q => return_vector(i),
-                C => clk);
 
     output_data: if (i rem 2)=0 generate
     begin
@@ -503,9 +469,9 @@ begin
       pc_vector_mux_lut: LUT6_2
       generic map (INIT => X"FF00F0F0CCCCAAAA")
       port map( I0 => instruction(i),
-                I1 => return_vector(i),
+                I1 => '0',
                 I2 => instruction(i+1),
-                I3 => return_vector(i+1),
+                I3 => '0',
                 I4 => instruction(12),
                 I5 => '1',
                 O5 => pc_vector(i),
