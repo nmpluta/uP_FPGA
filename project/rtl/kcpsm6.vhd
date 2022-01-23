@@ -30,14 +30,6 @@ entity kcpsm6 is
 --
 architecture low_level_definition of kcpsm6 is
 --
--------------------------------------------------------------------------------------------
---
--- Components
---
--------------------------------------------------------------------------------------------
---
-
---
 -- declaration of alu_decode
 --
   component alu_decode
@@ -50,14 +42,6 @@ architecture low_level_definition of kcpsm6 is
       arith_carry_in :    out std_logic;
       alu_mux_sel :       out std_logic_vector(1 downto 0));
   end component;
-
-
---
--------------------------------------------------------------------------------------------
---
--- Signals used in kcpsm6
---
--------------------------------------------------------------------------------------------
 --
 -- State Machine and Interrupt
 --
@@ -121,13 +105,7 @@ signal      carry_middle_zero : std_logic;
 signal         upper_zero_sel : std_logic;
 signal        zero_flag_value : std_logic;
 signal              zero_flag : std_logic;
---
--- Scratch Pad Memory
---
-signal       spm_enable_value : std_logic;
-signal             spm_enable : std_logic;
-signal           spm_ram_data : std_logic_vector(7 downto 0);
-signal               spm_data : std_logic_vector(7 downto 0);
+
 --
 -- Registers
 --
@@ -175,7 +153,6 @@ begin
   -------------------------------------------------------------------------------------------
   --
   -- State Machine and Control
-  --
   --
   --     1 x LUT6
   --     4 x LUT6_2
@@ -271,7 +248,6 @@ begin
   --
   -- Decoders
   --
-  --
   --     2 x LUT6
   --    10 x LUT6_2
   --     2 x FD
@@ -279,11 +255,8 @@ begin
   --
   -------------------------------------------------------------------------------------------
   --
-
-  --
   -- Decoding for Program Counter and Stack
   --
-
   pc_move_is_valid_lut: LUT6
   generic map (INIT => X"5A3CFFFF00000000")
   port map( I0 => carry_flag,
@@ -374,7 +347,7 @@ begin
               R => '0',
               C => clk);
 
-  spm_enable_lut: LUT6_2
+  spm_enable_lut: LUT6
   generic map (INIT => X"8000000020000000")
   port map( I0 => instruction(13),
             I1 => instruction(14),
@@ -382,8 +355,7 @@ begin
             I3 => strobe_type,
             I4 => t_state(1),
             I5 => '1',
-            O5 => k_write_strobe_value,
-            O6 => spm_enable_value);
+            O => k_write_strobe_value);
 
   k_write_strobe_flop: FDR
   port map (  D => k_write_strobe_value,
@@ -391,11 +363,6 @@ begin
               R => '0',
               C => clk);
 
-  spm_enable_flop: FDR
-  port map (  D => spm_enable_value,
-              Q => spm_enable,
-              R => '0',
-              C => clk);
 
   read_strobe_lut: LUT6_2
   generic map (INIT => X"4000000001000000")
@@ -420,11 +387,8 @@ begin
               R => '0',
               C => clk);
 
-  --
   -------------------------------------------------------------------------------------------
-  --
   -- Register bank control
-  --
   --
   --     2 x LUT6
   --     1 x FDR
@@ -468,9 +432,7 @@ begin
 
   --
   -------------------------------------------------------------------------------------------
-  --
   -- Flags
-  --
   --
   --     3 x LUT6
   --     5 x LUT6_2
@@ -604,16 +566,12 @@ begin
              CE => flag_enable,
               R => internal_reset,
               C => clk);
-
   --
   -------------------------------------------------------------------------------------------
   --
   -- 12-bit Program Address Generation
   --
   -------------------------------------------------------------------------------------------
-  --
-
-  --
   -- Prepare 12-bit vector from the sX and sY register outputs.
   --
 
@@ -639,9 +597,6 @@ begin
     --     12 x FD
     --
     -------------------------------------------------------------------------------------------
-    --
-
-    --
     -- Pipeline output of the stack memory
     --
 
@@ -704,7 +659,6 @@ begin
                 R => internal_reset,
                CE => t_state(1),
                 C => clk);
-
 
     lsb_pc: if i=0 generate
     begin
@@ -852,8 +806,6 @@ begin
     --     4 x LUT6_2
     --
     -------------------------------------------------------------------------------------------
-    --
-    --
     -- 2 bits per LUT so only generate when 'i' is even
     --
 
@@ -885,8 +837,6 @@ begin
     --     4 x LUT6_2
     --
     -------------------------------------------------------------------------------------------
-    --
-    --
     -- 2 bits per LUT so only generate when 'i' is even
     --
     second_operand: if (i rem 2)=0 generate
@@ -1001,60 +951,11 @@ begin
     port map( I0 => arith_logical_result(i),
               I1 => '0',
               I2 => in_port(i),
-              I3 => spm_data(i),
+              I3 => '0',
               I4 => alu_mux_sel(0),
               I5 => alu_mux_sel(1),
                O => alu_result(i));
 
-    --
-    -------------------------------------------------------------------------------------------
-    --
-    -- Scratchpad Memory with output register.
-    --
-    -- The size of the scratch pad memory is defined by the 'scratch_pad_memory_size' generic.
-    -- The default size is 64 bytes the same as KCPSM3 but this can be increased to 128 or 256
-    -- bytes at an additional cost of 2 and 6 Slices.
-    --
-    --
-    -- 2 x RAM64M    (64 bytes).
-    --
-    -- 8 x FD.
-    --
-    -------------------------------------------------------------------------------------------
-    --
-
-    small_spm: if scratch_pad_memory_size = 64 generate
-    begin
-
-      spm_flop: FD
-      port map ( D => spm_ram_data(i),
-                 Q => spm_data(i),
-                 C => clk);
-
-      small_spm_ram: if (i=0 or i=4) generate
-      begin
-
-        spm_ram: RAM64M
-        generic map ( INIT_A => X"0000000000000000",
-                      INIT_B => X"0000000000000000",
-                      INIT_C => X"0000000000000000",
-                      INIT_D => X"0000000000000000")
-        port map (   DOA => spm_ram_data(i),
-                     DOB => spm_ram_data(i+1),
-                     DOC => spm_ram_data(i+2),
-                     DOD => spm_ram_data(i+3),
-                   ADDRA => sy_or_kk(5 downto 0),
-                   ADDRB => sy_or_kk(5 downto 0),
-                   ADDRC => sy_or_kk(5 downto 0),
-                   ADDRD => sy_or_kk(5 downto 0),
-                     DIA => sx(i),
-                     DIB => sx(i+1),
-                     DIC => sx(i+2),
-                     DID => sx(i+3),
-                      WE => spm_enable,
-                    WCLK => clk );
-      end generate small_spm_ram;
-    end generate small_spm;
   end generate data_path_loop;
 
   --
