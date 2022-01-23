@@ -1,4 +1,4 @@
-set_property SRC_FILE_INFO {cfile:E:/Studia/S5/PUL/projekt/uP_FPGA/project/constraints/uart6_kc705.xdc rfile:../constraints/uart6_kc705.xdc id:1} [current_design]
+set_property SRC_FILE_INFO {cfile:C:/studia/MTM/MTM-5/PUL/projekt_main/uP_FPGA/project/constraints/uart6_kc705.xdc rfile:../constraints/uart6_kc705.xdc id:1} [current_design]
 set_property src_info {type:XDC file:1 line:95 export:INPUT save:INPUT read:READ} [current_design]
 set_max_delay 50 -from [get_ports uart_rx] -to [get_clocks clk200] -quiet -datapath_only
 set_property src_info {type:XDC file:1 line:96 export:INPUT save:INPUT read:READ} [current_design]
