@@ -1,12 +1,12 @@
-set project VHDL
-set top_module VHDL
+set project uP_picoblaze
+set top_module picoblaze_top
 set target xc7a35tcpg236-1
 # if generate_rtl 1 then during executing bitstream will be created rtl_schematic pdf
 set generate_rtl 0
 # set path where vivado has to put project and running output
 set build_path vivado/build
 # set simulation top module
-set top_sim_module uart6_kc705
+set top_sim_module picoblaze_top
 
 set bitstream_file ${build_path}/${project}.runs/impl_1/${top_module}.bit
 
@@ -26,7 +26,7 @@ proc attach_rtl_files {} {
         }
 
         read_vhdl {
-                rtl/uart6_kc705.vhd
+                rtl/picoblaze_top.vhd
                 rtl/kcpsm6.vhd
                 rtl/auto_baud_rate_control.vhd
                 rtl/alu_decode.vhd
@@ -51,30 +51,22 @@ proc attach_sim_files {} {
 
         #-------------------PUT YOUR CODE HERE-------------------
         # read_xdc {
-        #         constraints/Basys3_Master.xdc
         # }
 
         # read_vhdl {
-        #         rtl/sequence_detector_MEALY_FSM.vhd
         # }
 
         # read_verilog {
         # }
 
         #  read_mem {
-        #          rtl/memory.data
         #  }
 
         add_files -fileset sim_1 {
-                sim/testbench_uart6_kc705.vhd
+                sim/testbench_picoblaze.vhd
 
         }
         #--------------------------------------------------------
-
-        # add_files -fileset sim_1 {
-        #         sim/testbench.v
-        #         sim/tiff_writer.v
-        # }
 }
 
 proc check_project {} {
@@ -166,14 +158,12 @@ if {[lindex $argv 0] == "simulation"} {
         update_compile_order -fileset sim_1
 	launch_simulation
         #run all
-        # add_wave {{/testbench_uart6_kc705/uut/set_baud_rate}} {{/testbench_uart6_kc705/uut/en_16_x_baud}}
-        add_wave {{/testbench_uart6_kc705/uut/processor/address}}
-
+        add_wave {{/testbench_picoblaze/picoblaze_top_tes/processor/address}} {{/testbench_picoblaze/picoblaze_top_tes/processor/instruction}}
+        add_wave {{/testbench_picoblaze/picoblaze_top_tes/processor/in_port}} {{/testbench_picoblaze/picoblaze_top_tes/processor/out_port}} {{/testbench_picoblaze/picoblaze_top_tes/processor/write_strobe}} {{/testbench_picoblaze/picoblaze_top_tes/processor/read_strobe}}
+        relaunch_sim
         start_gui
         run all
         # exit
-        # add_wave {{/draw_rect_ctl_test/my_draw_rect_ctl/xpos}} {{/draw_rect_ctl_test/my_draw_rect_ctl/ypos}}
-
 
 } else {
         if {[lindex $argv 0] == "run"} {
