@@ -67,7 +67,7 @@ begin
         processor: kcpsm6
         generic map(
                         hwbuild                 => X"41",    -- 41 hex is ASCII Character "A"
-                        interrupt_vector        => X"7FF",
+                        interrupt_vector        => X"3FF",
                         scratch_pad_memory_size => 64
                         )
         port map(
