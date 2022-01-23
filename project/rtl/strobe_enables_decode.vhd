@@ -14,7 +14,6 @@ entity strobe_enables_decode is
 
     instruction :       in std_logic_vector(17 downto 0);
     t_state :           in std_logic_vector(2 downto 1);
-    active_interrupt :  in std_logic;
     strobe_type :       in std_logic;
 
     flag_enable :       out std_logic;
@@ -69,16 +68,14 @@ begin
             O5 => flag_enable_value,
             O6 => register_enable_value);
 
-  flag_enable_flop: FDR
+  flag_enable_flop: FD
   port map (  D => flag_enable_value,
               Q => flag_enable,
-              R => active_interrupt,
               C => clk);
 
-  register_enable_flop: FDR
+  register_enable_flop: FD
   port map (  D => register_enable_value,
               Q => register_enable,
-              R => active_interrupt,
               C => clk);
 
   read_strobe_lut: LUT6_2
@@ -92,16 +89,14 @@ begin
             O5 => read_strobe_value,
             O6 => write_strobe_value);
 
-  write_strobe_flop: FDR
+  write_strobe_flop: FD
   port map (  D => write_strobe_value,
               Q => write_strobe,
-              R => active_interrupt,
               C => clk);
 
-  read_strobe_flop: FDR
+  read_strobe_flop: FD
   port map (  D => read_strobe_value,
               Q => read_strobe,
-              R => active_interrupt,
               C => clk);
 
 

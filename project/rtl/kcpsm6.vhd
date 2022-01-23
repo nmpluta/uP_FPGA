@@ -48,7 +48,6 @@ architecture low_level_definition of kcpsm6 is
   
       instruction :       in std_logic_vector(17 downto 0);
       t_state :           in std_logic_vector(2 downto 1);
-      active_interrupt :  in std_logic;
       strobe_type :       in std_logic;
   
       flag_enable :       out std_logic;
@@ -334,7 +333,6 @@ begin
       clk => clk,
       instruction => instruction,
       t_state => t_state,
-      active_interrupt => '0',
       strobe_type => strobe_type,
   
       flag_enable => flag_enable,
