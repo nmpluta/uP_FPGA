@@ -22,7 +22,7 @@ proc attach_rtl_files {} {
 
         remove_files [get_files -quiet]
         read_xdc {
-                constraints/uart6_kc705.xdc
+                constraints/constraints.xdc
         }
 
         read_vhdl {
