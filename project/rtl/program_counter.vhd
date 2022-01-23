@@ -9,8 +9,6 @@ library unisim;
 use unisim.vcomponents.all;
 
 entity program_counter is
-  generic(
-    interrupt_vector : std_logic_vector(11 downto 0) := X"3FF");
   port(
     clk : in std_logic;
     internal_reset : in std_logic;
@@ -84,10 +82,6 @@ begin
 
     lsb_pc: if i=0 generate
     begin
-
-      low_int_vector: if interrupt_vector(i)='0' generate
-      begin
-
         pc_lut: LUT6
         generic map (INIT => X"00AA000033CC0F00")
         port map( I0 => register_vector(i),
@@ -97,23 +91,6 @@ begin
                   I4 => pc_mode(1),
                   I5 => pc_mode(2),
                    O => half_pc(i));
-
-      end generate low_int_vector;
-
-      high_int_vector: if interrupt_vector(i)='1' generate
-      begin
-
-        pc_lut: LUT6
-        generic map (INIT => X"00AA00FF33CC0F00")
-        port map( I0 => register_vector(i),
-                  I1 => pc_vector(i),
-                  I2 => pc_buffer(i),
-                  I3 => pc_mode(0),
-                  I4 => pc_mode(1),
-                  I5 => pc_mode(2),
-                   O => half_pc(i));
-
-      end generate high_int_vector;
 
       pc_xorcy: XORCY
       port map( LI => half_pc(i),
@@ -130,10 +107,6 @@ begin
 
     upper_pc: if i>0 generate
     begin
-
-      low_int_vector: if interrupt_vector(i)='0' generate
-      begin
-
         pc_lut: LUT6
         generic map (INIT => X"00AA0000CCCCF000")
         port map( I0 => register_vector(i),
@@ -143,23 +116,6 @@ begin
                   I4 => pc_mode(1),
                   I5 => pc_mode(2),
                    O => half_pc(i));
-
-      end generate low_int_vector;
-
-      high_int_vector: if interrupt_vector(i)='1' generate
-      begin
-
-        pc_lut: LUT6
-        generic map (INIT => X"00AA00FFCCCCF000")
-        port map( I0 => register_vector(i),
-                  I1 => pc_vector(i),
-                  I2 => pc_buffer(i),
-                  I3 => pc_mode(0),
-                  I4 => pc_mode(1),
-                  I5 => pc_mode(2),
-                   O => half_pc(i));
-
-      end generate high_int_vector;
 
       --
       -- Carry chain implementing remainder of increment function
