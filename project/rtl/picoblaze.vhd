@@ -86,7 +86,7 @@ architecture low_level_definition of picoblaze is
         end component;
 
 
-    component state_control
+        component state_control
         port(
                 clk                     : in std_logic;
                 reset                   : in std_logic;
@@ -95,6 +95,12 @@ architecture low_level_definition of picoblaze is
         );
         end component;
 
+        component adress_generator
+        port(
+                instruction           : in std_logic_vector(17 downto 0);
+                pc_vector             : out std_logic_vector(11 downto 0)
+        );
+        end component;
 --
 -- State Machine and Interrupt
 --
@@ -210,19 +216,20 @@ begin
   -- Decoding for strobes and enables
   --
 
-  dec_str_en: strobe_enables_decode
-    port map(
-      clk => clk,
-      instruction => instruction,
-      t_state => t_state,
-      strobe_type => strobe_type,
+        dec_str_en: strobe_enables_decode
+        port map(
+                        clk             => clk,
+                        instruction     => instruction,
+                        t_state         => t_state,
+                        strobe_type     => strobe_type,
 
-      flag_enable => flag_enable,
-      register_enable => register_enable,
-      read_strobe => read_strobe,
-      write_strobe => write_strobe);
+                        flag_enable     => flag_enable,
+                        register_enable => register_enable,
+                        read_strobe     => read_strobe,
+                        write_strobe    => write_strobe
+                );
 
-    my_flags: flags
+        my_flags: flags
         port map(
                         clk                     => clk,
                         internal_reset          => internal_reset,
@@ -242,48 +249,31 @@ begin
   -- Prepare 12-bit vector from the sX and sY register outputs.
   --
 
-  address_loop: for i in 0 to 11 generate
-  begin
-
-    --
-    -------------------------------------------------------------------------------------------
-    --
-    -- Selection of vector to load program counter
-    --
-    -- instruction(12)
-    --              0  Constant aaa from instruction(11:0)
-    --              1  Return vector from stack
-    --
-    -- 'aaa' is used during 'JUMP aaa', 'JUMP c, aaa', 'CALL aaa' and 'CALL c, aaa'.
-    -- Return vector is used during 'RETURN', 'RETURN c', 'RETURN&LOAD' and 'RETURNI'.
-    --
-    --     6 x LUT6_2
-    --     12 x FD
-    --
-    -------------------------------------------------------------------------------------------
-    -- Pipeline output of the stack memory
-    --
+--     --
+--     -------------------------------------------------------------------------------------------
+--     --
+--     -- Selection of vector to load program counter
+--     --
+--     -- instruction(12)
+--     --              0  Constant aaa from instruction(11:0)
+--     --              1  Return vector from stack
+--     --
+--     -- 'aaa' is used during 'JUMP aaa', 'JUMP c, aaa', 'CALL aaa' and 'CALL c, aaa'.
+--     -- Return vector is used during 'RETURN', 'RETURN c', 'RETURN&LOAD' and 'RETURNI'.
+--     --
+--     --     6 x LUT6_2
+--     --     12 x FD
+--     --
+--     -------------------------------------------------------------------------------------------
+--     -- Pipeline output of the stack memory
+--     --
 
 
-    output_data: if (i rem 2)=0 generate
-    begin
-
-      pc_vector_mux_lut: LUT3
-      generic map (INIT => X"0A")
-      port map( I0 => instruction(i),
-                I1 => instruction(i+1),
-                I2 => instruction(12),
-                O => pc_vector(i));
-      
-      pc_vector_mux_lut_nxt: LUT3
-      generic map (INIT => X"0C")
-      port map( I0 => instruction(i),
-                I1 => instruction(i+1),
-                I2 => instruction(12),
-                O => pc_vector(i+1));
-
-    end generate output_data;
-  end generate address_loop;
+        my_adress_generator: adress_generator
+        port map(
+                        instruction     => instruction,
+                        pc_vector       => pc_vector
+                );
 
   --
   -------------------------------------------------------------------------------------------
