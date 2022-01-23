@@ -29,7 +29,6 @@ architecture Behavioral of uart6_kc705 is
                         out_port                : out std_logic_vector(7 downto 0);
                         port_id                 : out std_logic_vector(7 downto 0);
                         write_strobe            : out std_logic;
-                        k_write_strobe          : out std_logic;
                         read_strobe             : out std_logic;
                         interrupt               : in std_logic;
                         interrupt_ack           : out std_logic;
@@ -62,7 +61,6 @@ signal              in_port : std_logic_vector(7 downto 0);
 signal             out_port : std_logic_vector(7 downto 0);
 signal              port_id : std_logic_vector(7 downto 0);
 signal         write_strobe : std_logic;
-signal       k_write_strobe : std_logic;
 signal          read_strobe : std_logic;
 signal            interrupt : std_logic;
 signal        interrupt_ack : std_logic;
@@ -92,7 +90,6 @@ begin
                     bram_enable             => bram_enable,
                     port_id                 => port_id,
                     write_strobe            => write_strobe,
-                    k_write_strobe          => k_write_strobe,
                     out_port                => out_port,
                     read_strobe             => read_strobe,
                     in_port                 => (X"00"),

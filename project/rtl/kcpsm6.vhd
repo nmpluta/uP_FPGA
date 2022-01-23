@@ -15,7 +15,6 @@ entity kcpsm6 is
                           out_port : out std_logic_vector(7 downto 0);
                            port_id : out std_logic_vector(7 downto 0);
                       write_strobe : out std_logic;
-                    k_write_strobe : out std_logic;
                        read_strobe : out std_logic;
                          interrupt : in std_logic;
                      interrupt_ack : out std_logic;
@@ -54,9 +53,8 @@ architecture low_level_definition of kcpsm6 is
   
       flag_enable :       out std_logic;
       register_enable :   out std_logic;
-      write_strobe :      out std_logic;
-      k_write_strobe :    out std_logic;
-      spm_enable :        out std_logic);
+      read_strobe :       out std_logic;
+      write_strobe :      out std_logic);
     end component;
 
 --
@@ -96,7 +94,6 @@ signal            alu_mux_sel : std_logic_vector(1 downto 0);
 --
 signal            strobe_type : std_logic;
 signal     write_strobe_value : std_logic;
-signal   k_write_strobe_value : std_logic;
 signal      read_strobe_value : std_logic;
 --
 -- Flags
@@ -342,8 +339,8 @@ begin
   
       flag_enable => flag_enable,
       register_enable => register_enable,
-      write_strobe => write_strobe,
-      k_write_strobe => k_write_strobe);
+      read_strobe => read_strobe,
+      write_strobe => write_strobe);
 
   --
   -------------------------------------------------------------------------------------------

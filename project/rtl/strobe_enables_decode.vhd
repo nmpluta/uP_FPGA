@@ -20,9 +20,7 @@ entity strobe_enables_decode is
     flag_enable :       out std_logic;
     register_enable :   out std_logic;
     write_strobe :      out std_logic;
-    read_strobe :       out std_logic;
-    k_write_strobe :    out std_logic;
-    spm_enable :        out std_logic);
+    read_strobe :       out std_logic);
   end strobe_enables_decode;
 
 architecture arch of strobe_enables_decode is
@@ -32,8 +30,6 @@ signal    flag_enable_type :      std_logic;
 signal    flag_enable_value :     std_logic;
 signal    register_enable_type :  std_logic;
 signal    register_enable_value : std_logic;
-signal    k_write_strobe_value :  std_logic;
-signal    spm_enable_value :      std_logic;
 signal    read_strobe_value :     std_logic;
 signal    write_strobe_value :    std_logic;
 
@@ -82,29 +78,6 @@ begin
   register_enable_flop: FDR
   port map (  D => register_enable_value,
               Q => register_enable,
-              R => active_interrupt,
-              C => clk);
-
-  spm_enable_lut: LUT6_2
-  generic map (INIT => X"8000000020000000")
-  port map( I0 => instruction(13),
-            I1 => instruction(14),
-            I2 => instruction(17),
-            I3 => strobe_type,
-            I4 => t_state(1),
-            I5 => '1',
-            O5 => k_write_strobe_value,
-            O6 => spm_enable_value);
-
-  k_write_strobe_flop: FDR
-  port map (  D => k_write_strobe_value,
-              Q => k_write_strobe,
-              R => active_interrupt,
-              C => clk);
-
-  spm_enable_flop: FDR
-  port map (  D => spm_enable_value,
-              Q => spm_enable,
               R => active_interrupt,
               C => clk);
 
