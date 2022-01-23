@@ -4,7 +4,7 @@ use IEEE.STD_LOGIC_UNSIGNED.ALL;
 library unisim;
 use unisim.vcomponents.all;
 
-entity kcpsm6 is
+entity picoblaze is
   generic(                 hwbuild : std_logic_vector(7 downto 0) := X"00";
                   interrupt_vector : std_logic_vector(11 downto 0) := X"3FF";
            scratch_pad_memory_size : integer := 64);
@@ -19,13 +19,13 @@ entity kcpsm6 is
                              sleep : in std_logic;
                              reset : in std_logic;
                                clk : in std_logic);
-  end kcpsm6;
+  end picoblaze;
 --
 -------------------------------------------------------------------------------------------
 --
--- Start of Main Architecture for kcpsm6
+-- Start of Main Architecture for picoblaze
 --
-architecture low_level_definition of kcpsm6 is
+architecture low_level_definition of picoblaze is
 --
 -- declaration of alu_decode
 --

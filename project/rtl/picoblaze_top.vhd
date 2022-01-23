@@ -15,7 +15,7 @@ end picoblaze_top;
 
 architecture Behavioral of picoblaze_top is
 
-        component kcpsm6
+        component picoblaze
                 generic(
                                 hwbuild                 : std_logic_vector(7 downto 0) := X"00";
                                 interrupt_vector        : std_logic_vector(11 downto 0) := X"3FF";
@@ -35,7 +35,7 @@ architecture Behavioral of picoblaze_top is
                         );
         end component;
 
-        component auto_baud_rate_control
+        component program
         generic(
                         C_FAMILY                : string := "S6";
                         C_RAM_SIZE_KWORDS       : integer := 1;
@@ -66,7 +66,7 @@ architecture Behavioral of picoblaze_top is
 
 begin
 
-        processor: kcpsm6
+        processor: picoblaze
         generic map(
                         hwbuild                 => X"41",    -- 41 hex is ASCII Character "A"
                         interrupt_vector        => X"7FF",
@@ -86,7 +86,7 @@ begin
                         clk                     => clk
                 );
 
-        program_rom: auto_baud_rate_control
+        program_rom: program
         generic map(
                         C_FAMILY              => "7S",
                         C_RAM_SIZE_KWORDS     => 2,
