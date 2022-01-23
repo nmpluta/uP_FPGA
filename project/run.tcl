@@ -31,6 +31,7 @@ proc attach_rtl_files {} {
                 rtl/auto_baud_rate_control.vhd
                 rtl/alu_decode.vhd
                 rtl/strobe_enables_decode.vhd
+                rtl/program_counter_decode.vhd
         }
 
         # read_verilog {
