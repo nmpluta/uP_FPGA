@@ -12,7 +12,7 @@ entity picoblaze is
                        instruction : in std_logic_vector(17 downto 0);
                        bram_enable : out std_logic;
                            in_port : in std_logic_vector(7 downto 0);
-                          out_port : out std_logic_vector(7 downto 0);
+                           out_port : out std_logic_vector(7 downto 0);
                            port_id : out std_logic_vector(7 downto 0);
                       write_strobe : out std_logic;
                        read_strobe : out std_logic;
@@ -73,6 +73,22 @@ architecture low_level_definition of picoblaze is
 
       pc : out std_logic_vector(11 downto 0));
     end component;
+
+    -- Flags
+    component flags
+      port(
+        clk : in std_logic;
+
+        instruction :       in std_logic_vector(17 downto 0);
+        carry_arith_logical : in std_logic;
+        carry_flag :        out std_logic;
+        flag_enable :       in std_logic;
+        internal_reset : in std_logic;
+        alu_result : in std_logic_vector(7 downto 0);
+        strobe_type : out std_logic
+    );
+    end component;
+
 
 --
 -- State Machine and Interrupt
@@ -319,112 +335,17 @@ begin
   -------------------------------------------------------------------------------------------
   --
 
-  arith_carry_xorcy: XORCY
-  port map( LI => '0',
-            CI => carry_arith_logical(7),
-             O => arith_carry_value);
-
-  arith_carry_flop: FD
-  port map (  D => arith_carry_value,
-              Q => arith_carry,
-              C => clk);
-
-  carry_flag_lut: LUT6_2
-  generic map (INIT => X"3333AACCF0AA0000")
-  port map( I0 => '0',
-            I1 => arith_carry,
-            I2 => '0',
-            I3 => instruction(14),
-            I4 => instruction(15),
-            I5 => instruction(16),
-            O5 => drive_carry_in_zero,
-            O6 => carry_flag_value);
-
-  carry_flag_flop: FDRE
-  port map (  D => carry_flag_value,
-              Q => carry_flag,
-             CE => flag_enable,
-              R => internal_reset,
-              C => clk);
-
-  init_zero_muxcy: MUXCY
-  port map( DI => drive_carry_in_zero,
-            CI => '0',
-             S => carry_flag_value,
-             O => carry_in_zero);
-
-  use_zero_flag_lut: LUT6_2
-  generic map (INIT => X"A280000000F000F0")
-  port map( I0 => instruction(13),
-            I1 => instruction(14),
-            I2 => instruction(15),
-            I3 => instruction(16),
-            I4 => '1',
-            I5 => '1',
-            O5 => strobe_type,
-            O6 => use_zero_flag_value);
-
-  use_zero_flag_flop: FD
-  port map (  D => use_zero_flag_value,
-              Q => use_zero_flag,
-              C => clk);
-
-  lower_zero_lut: LUT6_2
-  generic map (INIT => X"0000000000000001")
-  port map( I0 => alu_result(0),
-            I1 => alu_result(1),
-            I2 => alu_result(2),
-            I3 => alu_result(3),
-            I4 => alu_result(4),
-            I5 => '1',
-            O5 => lower_zero,
-            O6 => lower_zero_sel);
-
-  lower_zero_muxcy: MUXCY
-  port map( DI => lower_zero,
-            CI => carry_in_zero,
-             S => lower_zero_sel,
-             O => carry_lower_zero);
-
-  middle_zero_lut: LUT6_2
-  generic map (INIT => X"0000000D00000000")
-  port map( I0 => use_zero_flag,
-            I1 => zero_flag,
-            I2 => alu_result(5),
-            I3 => alu_result(6),
-            I4 => alu_result(7),
-            I5 => '1',
-            O5 => middle_zero,
-            O6 => middle_zero_sel);
-
-  middle_zero_muxcy: MUXCY
-  port map( DI => middle_zero,
-            CI => carry_lower_zero,
-             S => middle_zero_sel,
-             O => carry_middle_zero);
-
-  upper_zero_lut: LUT6
-  generic map (INIT => X"FBFF000000000000")
-  port map( I0 => instruction(14),
-            I1 => instruction(15),
-            I2 => instruction(16),
-            I3 => '1',
-            I4 => '1',
-            I5 => '1',
-             O => upper_zero_sel);
-
-  upper_zero_muxcy: MUXCY
-  port map( DI => '0',
-            CI => carry_middle_zero,
-             S => upper_zero_sel,
-             O => zero_flag_value);
-
-  zero_flag_flop: FDRE
-  port map (  D => zero_flag_value,
-              Q => zero_flag,
-             CE => flag_enable,
-              R => internal_reset,
-              C => clk);
+    my_flags: flags
+        port map(
+                        clk                     => clk,
+                        internal_reset          => internal_reset,
+                        flag_enable             => flag_enable,
+                        instruction             => instruction,
+                        carry_arith_logical     => carry_arith_logical(7),
+                        alu_result              => alu_result,
+                        strobe_type             => strobe_type,
+                        carry_flag              => carry_flag
+                );
   --
   -------------------------------------------------------------------------------------------
   --

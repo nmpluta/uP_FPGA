@@ -28,8 +28,9 @@ proc attach_rtl_files {} {
         read_vhdl {
                 rtl/picoblaze_top.vhd
                 rtl/picoblaze.vhd
-                rtl/auto_baud_rate_control.vhd
+                rtl/program.vhd
                 rtl/alu_decode.vhd
+                rtl/flags.vhd
                 rtl/strobe_enables_decode.vhd
                 rtl/program_counter_decode.vhd
                 rtl/program_counter.vhd

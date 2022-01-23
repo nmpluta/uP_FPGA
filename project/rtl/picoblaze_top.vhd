@@ -34,7 +34,7 @@ architecture Behavioral of picoblaze_top is
                         );
         end component;
 
-        component auto_baud_rate_control
+        component program
         generic(
                         C_FAMILY                : string := "S6";
                         C_RAM_SIZE_KWORDS       : integer := 1;
@@ -83,7 +83,7 @@ begin
                         clk                     => clk
                 );
 
-        program_rom: auto_baud_rate_control
+        program_rom: program
         generic map(
                         C_FAMILY              => "7S",
                         C_RAM_SIZE_KWORDS     => 2,
