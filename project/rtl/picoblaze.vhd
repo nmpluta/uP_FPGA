@@ -1,8 +1,9 @@
 library IEEE;
+library UNISIM;
 use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_ARITH.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
-library unisim;
-use unisim.vcomponents.all;
+use UNISIM.VCOMPONENTS.ALL;
 
 entity picoblaze is
   generic(                 hwbuild : std_logic_vector(7 downto 0) := X"00");
@@ -97,11 +98,7 @@ architecture low_level_definition of picoblaze is
 --
 -- State Machine and Interrupt
 --
-signal t_state_value : std_logic_vector(2 downto 1);
 signal t_state : std_logic_vector(2 downto 1);
-signal run_value : std_logic;
-signal run : std_logic;
-signal internal_reset_value : std_logic;
 signal internal_reset : std_logic;
 
 --
@@ -128,24 +125,8 @@ signal strobe_type : std_logic;
 --
 -- Flags
 --
-signal flag_enable_type : std_logic;
-signal flag_enable_value : std_logic;
 signal flag_enable : std_logic;
-signal carry_flag_value : std_logic;
 signal carry_flag : std_logic;
-
-signal use_zero_flag_value : std_logic;
-signal use_zero_flag : std_logic;
-signal drive_carry_in_zero : std_logic;
-signal carry_in_zero : std_logic;
-signal lower_zero : std_logic;
-signal lower_zero_sel : std_logic;
-signal carry_lower_zero : std_logic;
-signal middle_zero : std_logic;
-signal middle_zero_sel : std_logic;
-signal carry_middle_zero : std_logic;
-signal upper_zero_sel : std_logic;
-signal zero_flag_value : std_logic;
 signal zero_flag : std_logic;
 
 --
@@ -165,9 +146,6 @@ signal sy_or_kk : std_logic_vector(7 downto 0);
 --
 signal pc_mode : std_logic_vector(2 downto 0);
 signal register_vector : std_logic_vector(11 downto 0);
-signal half_pc : std_logic_vector(11 downto 0);
-signal carry_pc : std_logic_vector(10 downto 0);
-signal pc_value : std_logic_vector(11 downto 0);
 signal pc : std_logic_vector(11 downto 0);
 signal pc_vector : std_logic_vector(11 downto 0);
 
@@ -263,8 +241,6 @@ begin
   -------------------------------------------------------------------------------------------
   -- Prepare 12-bit vector from the sX and sY register outputs.
   --
-
-  register_vector <= sx(3 downto 0) & sy;
 
   address_loop: for i in 0 to 11 generate
   begin
@@ -558,4 +534,6 @@ begin
 
   sx_addr(3 downto 0) <= instruction(11 downto 8);
   sy_addr <= '0' & instruction(7 downto 4);
+
+  register_vector <= sx(3 downto 0) & sy;
 end low_level_definition;
