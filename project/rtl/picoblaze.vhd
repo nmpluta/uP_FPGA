@@ -6,7 +6,6 @@ use IEEE.STD_LOGIC_UNSIGNED.ALL;
 use UNISIM.VCOMPONENTS.ALL;
 
 entity picoblaze is
-  generic(                 hwbuild : std_logic_vector(7 downto 0) := X"00");
   port (                   address : out std_logic_vector(11 downto 0);
                        instruction : in std_logic_vector(17 downto 0);
                        bram_enable : out std_logic;

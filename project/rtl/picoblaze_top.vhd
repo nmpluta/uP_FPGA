@@ -16,19 +16,18 @@ end picoblaze_top;
 architecture Behavioral of picoblaze_top is
 
         component picoblaze
-                generic(        hwbuild                 : std_logic_vector(7 downto 0) := X"00");
-                port(
-                                address                 : out std_logic_vector(11 downto 0);
-                                instruction             : in std_logic_vector(17 downto 0);
-                                bram_enable             : out std_logic;
-                                in_port                 : in std_logic_vector(7 downto 0);
-                                out_port                : out std_logic_vector(7 downto 0);
-                                port_id                 : out std_logic_vector(7 downto 0);
-                                write_strobe            : out std_logic;
-                                read_strobe             : out std_logic;
-                                reset                   : in std_logic;
-                                clk                     : in std_logic
-                        );
+        port(
+                        address                 : out std_logic_vector(11 downto 0);
+                        instruction             : in std_logic_vector(17 downto 0);
+                        bram_enable             : out std_logic;
+                        in_port                 : in std_logic_vector(7 downto 0);
+                        out_port                : out std_logic_vector(7 downto 0);
+                        port_id                 : out std_logic_vector(7 downto 0);
+                        write_strobe            : out std_logic;
+                        read_strobe             : out std_logic;
+                        reset                   : in std_logic;
+                        clk                     : in std_logic
+                );
         end component;
 
         component program
@@ -62,8 +61,6 @@ architecture Behavioral of picoblaze_top is
 begin
 
         processor: picoblaze
-        generic map(
-                        hwbuild                 => X"41")    -- 41 hex is ASCII Character "A"
         port map(
                         address                 => address,
                         instruction             => instruction,
