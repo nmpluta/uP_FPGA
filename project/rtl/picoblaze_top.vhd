@@ -15,7 +15,7 @@ end picoblaze_top;
 
 architecture Behavioral of picoblaze_top is
 
-        component kcpsm6
+        component picoblaze
                 generic(
                                 hwbuild                 : std_logic_vector(7 downto 0) := X"00";
                                 interrupt_vector        : std_logic_vector(11 downto 0) := X"3FF";
@@ -64,7 +64,7 @@ architecture Behavioral of picoblaze_top is
 
 begin
 
-        processor: kcpsm6
+        processor: picoblaze
         generic map(
                         hwbuild                 => X"41",    -- 41 hex is ASCII Character "A"
                         interrupt_vector        => X"3FF",
