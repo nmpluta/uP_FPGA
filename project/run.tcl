@@ -30,6 +30,7 @@ proc attach_rtl_files {} {
                 rtl/picoblaze.vhd
                 rtl/program.vhd
                 rtl/alu_decode.vhd
+                rtl/flags.vhd
                 rtl/strobe_enables_decode.vhd
         }
 
