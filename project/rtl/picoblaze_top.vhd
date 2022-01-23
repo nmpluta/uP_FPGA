@@ -16,10 +16,7 @@ end picoblaze_top;
 architecture Behavioral of picoblaze_top is
 
         component picoblaze
-                generic(
-                                hwbuild                 : std_logic_vector(7 downto 0) := X"00";
-                                interrupt_vector        : std_logic_vector(11 downto 0) := X"3FF";
-                                scratch_pad_memory_size : integer := 64);
+                generic(        hwbuild                 : std_logic_vector(7 downto 0) := X"00");
                 port(
                                 address                 : out std_logic_vector(11 downto 0);
                                 instruction             : in std_logic_vector(17 downto 0);
@@ -66,10 +63,7 @@ begin
 
         processor: picoblaze
         generic map(
-                        hwbuild                 => X"41",    -- 41 hex is ASCII Character "A"
-                        interrupt_vector        => X"3FF",
-                        scratch_pad_memory_size => 64
-                        )
+                        hwbuild                 => X"41")    -- 41 hex is ASCII Character "A"
         port map(
                         address                 => address,
                         instruction             => instruction,

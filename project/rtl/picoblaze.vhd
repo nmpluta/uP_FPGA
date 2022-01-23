@@ -5,9 +5,7 @@ library unisim;
 use unisim.vcomponents.all;
 
 entity picoblaze is
-  generic(                 hwbuild : std_logic_vector(7 downto 0) := X"00";
-                  interrupt_vector : std_logic_vector(11 downto 0) := X"3FF";
-           scratch_pad_memory_size : integer := 64);
+  generic(                 hwbuild : std_logic_vector(7 downto 0) := X"00");
   port (                   address : out std_logic_vector(11 downto 0);
                        instruction : in std_logic_vector(17 downto 0);
                        bram_enable : out std_logic;
