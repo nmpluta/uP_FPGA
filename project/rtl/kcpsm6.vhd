@@ -91,8 +91,6 @@ signal            alu_mux_sel : std_logic_vector(1 downto 0);
 -- Strobes
 --
 signal            strobe_type : std_logic;
-signal     write_strobe_value : std_logic;
-signal      read_strobe_value : std_logic;
 --
 -- Flags
 --
@@ -122,10 +120,6 @@ signal              zero_flag : std_logic;
 signal           regbank_type : std_logic;
 signal             bank_value : std_logic;
 signal                   bank : std_logic;
-signal          loadstar_type : std_logic;
-signal         sx_addr4_value : std_logic;
-signal   register_enable_type : std_logic;
-signal  register_enable_value : std_logic;
 signal        register_enable : std_logic;
 signal                sx_addr : std_logic_vector(4 downto 0);
 signal                sy_addr : std_logic_vector(4 downto 0);
@@ -145,11 +139,6 @@ signal               carry_pc : std_logic_vector(10 downto 0);
 signal               pc_value : std_logic_vector(11 downto 0);
 signal                     pc : std_logic_vector(11 downto 0);
 signal              pc_vector : std_logic_vector(11 downto 0);
---
--- Program Counter Stack
---
-signal     half_pointer_value : std_logic_vector(4 downto 0);
-signal     feed_pointer_value : std_logic_vector(4 downto 0);
 
 begin
 
