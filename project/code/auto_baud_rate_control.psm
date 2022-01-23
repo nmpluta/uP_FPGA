@@ -3,27 +3,31 @@ CONSTANT led_output, 01; port01 used for outputting Push Button info to leds
 
       JUMP init
 init:
-      LOAD s0, 00 ; load register 0-6 with FF value
+      LOAD s0, 00 ; coouter for loop 1
       LOAD s1, counter_compare_treshold ; load constant value to reg s1
       LOAD s2, 60
       LOAD s3, 00 ; reg for outputs
       LOAD s4, 01 ; const 1
       LOAD s5, FF ; const FF
-      LOAD s6, FF
+      LOAD s6, 00 ; counter for loop 2
       OUTPUT s5, led_output
-      JUMP start
-start:
+      JUMP loop_1
+loop_1:
+      OUTPUT s5, led_output
+      AND s4, s4 ; clear CARRY flag
       ADD s0, 01 ;
+      LOAD s6 , 00 ; reser r6 reg
       COMPARE s1, s0
-	JUMP C, regdiff ; go to regdiff sub
-      JUMP start; single loop end
+	JUMP C, loop_2 ; go to loop_2 sub
+      JUMP loop_1; single loop end
 
-regdiff:
+loop_2:
       OUTPUT s4, led_output
       AND s4, s4 ; clear CARRY flag
-      SUB s6, 01 ; decrement reg6 by 1
-      LOAD s0 , 00 ; reser r0 reg
-      OUTPUT s5, led_output
-      JUMP start ; go back to start program
+      ADD s6, 01 ;
+      LOAD s0 , 00 ; reset r0 reg
+      COMPARE s1, s6
+	JUMP C, loop_1 ; go to loop_2 sub
+      JUMP loop_2; single loop end
 end:
-	JUMP start
+	JUMP loop_1
