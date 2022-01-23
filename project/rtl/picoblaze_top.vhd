@@ -1,16 +1,15 @@
 library IEEE;
+library UNISIM;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.STD_LOGIC_ARITH.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
-library unisim;
-use unisim.vcomponents.all;
+use UNISIM.VCOMPONENTS.ALL;
 
 entity picoblaze_top is
         Port(
+                        clk       : in std_logic;
                         Sw        : in  std_logic_vector(7 downto 0);
-                        Ld        : out std_logic_vector(7 downto 0);
-                        clk200_p  : in std_logic;
-                        clk200_n  : in std_logic
+                        Ld        : out std_logic_vector(7 downto 0)
                 );
 end picoblaze_top;
 
@@ -37,20 +36,19 @@ architecture Behavioral of picoblaze_top is
 
         component auto_baud_rate_control
         generic(
-                        C_FAMILY : string := "S6";
-                        C_RAM_SIZE_KWORDS : integer := 1;
-                        C_JTAG_LOADER_ENABLE : integer := 0);
+                        C_FAMILY                : string := "S6";
+                        C_RAM_SIZE_KWORDS       : integer := 1;
+                        C_JTAG_LOADER_ENABLE    : integer := 0);
         Port(
-                        address : in std_logic_vector(11 downto 0);
-                        instruction : out std_logic_vector(17 downto 0);
-                        enable : in std_logic;
-                        rdl : out std_logic;
-                        clk : in std_logic
+                        clk             : in std_logic;
+                        rdl             : out std_logic;
+                        enable          : in std_logic;
+                        address         : in std_logic_vector(11 downto 0);
+                        instruction     : out std_logic_vector(17 downto 0)
                 );
         end component;
 
-        signal clk              : std_logic;
-        signal clk200           : std_logic;
+        signal clk_uP           : std_logic;
         signal rdl              : std_logic;
         signal bram_enable      : std_logic;
         signal write_strobe     : std_logic;
@@ -65,19 +63,6 @@ architecture Behavioral of picoblaze_top is
         signal port_id          : std_logic_vector(7 downto 0);
 
 begin
-
-        diff_clk_buffer: IBUFGDS
-        port map (
-                        I => clk200_p,
-                        IB => clk200_n,
-                        O => clk200
-                );
-
-        buffer200: BUFG
-        port map (
-                        I => clk200,
-                        O => clk
-                );
 
         processor: kcpsm6
         generic map(
