@@ -45,12 +45,12 @@ architecture low_level_definition of kcpsm6 is
   component strobe_enables_decode
     port(
       clk : in std_logic;
-  
+
       instruction :       in std_logic_vector(17 downto 0);
       t_state :           in std_logic_vector(2 downto 1);
       active_interrupt :  in std_logic;
       strobe_type :       in std_logic;
-  
+
       flag_enable :       out std_logic;
       register_enable :   out std_logic;
       read_strobe :       out std_logic;
@@ -67,10 +67,6 @@ signal                    run : std_logic;
 signal   internal_reset_value : std_logic;
 signal         internal_reset : std_logic;
 signal             sync_sleep : std_logic;
-signal        int_enable_type : std_logic;
-signal interrupt_enable_value : std_logic;
-signal       interrupt_enable : std_logic;
-signal         sync_interrupt : std_logic;
 
 --
 -- Arithmetic and Logical Functions
@@ -221,42 +217,6 @@ begin
   port map (  D => t_state_value(2),
               Q => t_state(2),
               C => clk);
-
-  int_enable_type_lut: LUT6_2
-  generic map (INIT => X"0010000000000800")
-  port map( I0 => instruction(13),
-            I1 => instruction(14),
-            I2 => instruction(15),
-            I3 => instruction(16),
-            I4 => instruction(17),
-            I5 => '1',
-            O5 => loadstar_type,
-            O6 => int_enable_type);
-
-  interrupt_enable_lut: LUT6
-  generic map (INIT => X"000000000000CAAA")
-  port map( I0 => interrupt_enable,
-            I1 => instruction(0),
-            I2 => int_enable_type,
-            I3 => t_state(1),
-            I4 => '0',
-            I5 => internal_reset,
-             O => interrupt_enable_value);
-
-  interrupt_enable_flop: FD
-  port map (  D => interrupt_enable_value,
-              Q => interrupt_enable,
-              C => clk);
-  active_interrupt_lut: LUT6_2
-  generic map (INIT => X"CC33FF0080808080")
-  port map( I0 => interrupt_enable,
-            I1 => t_state(2),
-            I2 => sync_interrupt,
-            I3 => bank,
-            I4 => loadstar_type,
-            I5 => '1',
-            O6 => sx_addr4_value);
-
   -------------------------------------------------------------------------------------------
   --
   -- Decoders
@@ -336,7 +296,7 @@ begin
       t_state => t_state,
       active_interrupt => '0',
       strobe_type => strobe_type,
-  
+
       flag_enable => flag_enable,
       register_enable => register_enable,
       read_strobe => read_strobe,
@@ -379,7 +339,7 @@ begin
               C => clk);
 
   sx_addr4_flop: FD
-  port map (  D => sx_addr4_value,
+  port map (  D => '0',
               Q => sx_addr(4),
               C => clk);
 
