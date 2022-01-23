@@ -30,6 +30,7 @@ proc attach_rtl_files {} {
                 rtl/kcpsm6.vhd
                 rtl/auto_baud_rate_control.vhd
                 rtl/alu_decode.vhd
+                rtl/strobe_enables_decode.vhd
         }
 
         # read_verilog {

@@ -42,6 +42,23 @@ architecture low_level_definition of kcpsm6 is
       arith_carry_in :    out std_logic;
       alu_mux_sel :       out std_logic_vector(1 downto 0));
   end component;
+
+  component strobe_enables_decode
+    port(
+      clk : in std_logic;
+  
+      instruction :       in std_logic_vector(17 downto 0);
+      t_state :           in std_logic_vector(2 downto 1);
+      active_interrupt :  in std_logic;
+      strobe_type :       in std_logic;
+  
+      flag_enable :       out std_logic;
+      register_enable :   out std_logic;
+      write_strobe :      out std_logic;
+      k_write_strobe :    out std_logic;
+      spm_enable :        out std_logic);
+    end component;
+
 --
 -- State Machine and Interrupt
 --
@@ -208,7 +225,6 @@ begin
               Q => t_state(2),
               C => clk);
 
-
   int_enable_type_lut: LUT6_2
   generic map (INIT => X"0010000000000800")
   port map( I0 => instruction(13),
@@ -303,7 +319,7 @@ begin
   -- Decoding for ALU
   --
 
-  decode: alu_decode
+  dec_alu: alu_decode
     port map(
       clk => clk,
       instruction => instruction,
@@ -312,81 +328,24 @@ begin
       arith_carry_in => arith_carry_in,
       alu_mux_sel => alu_mux_sel);
 
+  --
+  -- Decoding for strobes and enables
+  --
 
-  register_enable_type_lut: LUT6_2
-  generic map (INIT => X"00013F3F0010F7CE")
-  port map( I0 => instruction(13),
-            I1 => instruction(14),
-            I2 => instruction(15),
-            I3 => instruction(16),
-            I4 => instruction(17),
-            I5 => '1',
-            O5 => flag_enable_type,
-            O6 => register_enable_type);
+  dec_str_en: strobe_enables_decode
+    port map(
+      clk => clk,
+      instruction => instruction,
+      t_state => t_state,
+      active_interrupt => '0',
+      strobe_type => strobe_type,
+  
+      flag_enable => flag_enable,
+      register_enable => register_enable,
+      write_strobe => write_strobe,
+      k_write_strobe => k_write_strobe);
 
-  register_enable_lut: LUT6_2
-  generic map (INIT => X"C0CC0000A0AA0000")
-  port map( I0 => flag_enable_type,
-            I1 => register_enable_type,
-            I2 => instruction(12),
-            I3 => instruction(17),
-            I4 => t_state(1),
-            I5 => '1',
-            O5 => flag_enable_value,
-            O6 => register_enable_value);
-
-  flag_enable_flop: FDR
-  port map (  D => flag_enable_value,
-              Q => flag_enable,
-              R => '0',
-              C => clk);
-
-  register_enable_flop: FDR
-  port map (  D => register_enable_value,
-              Q => register_enable,
-              R => '0',
-              C => clk);
-
-  spm_enable_lut: LUT6
-  generic map (INIT => X"8000000020000000")
-  port map( I0 => instruction(13),
-            I1 => instruction(14),
-            I2 => instruction(17),
-            I3 => strobe_type,
-            I4 => t_state(1),
-            I5 => '1',
-            O => k_write_strobe_value);
-
-  k_write_strobe_flop: FDR
-  port map (  D => k_write_strobe_value,
-              Q => k_write_strobe,
-              R => '0',
-              C => clk);
-
-
-  read_strobe_lut: LUT6_2
-  generic map (INIT => X"4000000001000000")
-  port map( I0 => instruction(13),
-            I1 => instruction(14),
-            I2 => instruction(17),
-            I3 => strobe_type,
-            I4 => t_state(1),
-            I5 => '1',
-            O5 => read_strobe_value,
-            O6 => write_strobe_value);
-
-  write_strobe_flop: FDR
-  port map (  D => write_strobe_value,
-              Q => write_strobe,
-              R => '0',
-              C => clk);
-
-  read_strobe_flop: FDR
-  port map (  D => read_strobe_value,
-              Q => read_strobe,
-              R => '0',
-              C => clk);
-
+  --
   -------------------------------------------------------------------------------------------
   -- Register bank control
   --
@@ -453,7 +412,6 @@ begin
   port map (  D => arith_carry_value,
               Q => arith_carry,
               C => clk);
-
 
   shift_carry_lut: LUT6
   generic map (INIT => X"FFFFAACCF0F0F0F0")
@@ -577,7 +535,6 @@ begin
 
   register_vector <= sx(3 downto 0) & sy;
 
-
   address_loop: for i in 0 to 11 generate
   begin
 
@@ -651,7 +608,6 @@ begin
     --
     -------------------------------------------------------------------------------------------
     --
-
 
     pc_flop: FDRE
     port map (  D => pc_value(i),
