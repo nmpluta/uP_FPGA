@@ -28,7 +28,7 @@ architecture low_level_definition of picoblaze is
   component program_counter_decode
     port(
       clk : in std_logic;
-  
+
       instruction :   in std_logic_vector(17 downto 0);
       carry_flag :    in std_logic;
       zero_flag :     in std_logic;
@@ -145,9 +145,6 @@ signal              zero_flag : std_logic;
 --
 -- Registers
 --
-signal           regbank_type : std_logic;
-signal             bank_value : std_logic;
-signal                   bank : std_logic;
 signal        register_enable : std_logic;
 signal                sx_addr : std_logic_vector(4 downto 0);
 signal                sy_addr : std_logic_vector(4 downto 0);
@@ -241,9 +238,9 @@ begin
       clk => clk,
 
       instruction => instruction,
-      carry_flag => carry_flag, 
-      zero_flag => zero_flag, 
-      pc_mode => pc_mode); 
+      carry_flag => carry_flag,
+      zero_flag => zero_flag,
+      pc_mode => pc_mode);
 
 
   --
@@ -285,39 +282,8 @@ begin
   --
   -------------------------------------------------------------------------------------------
   --
-  regbank_type_lut: LUT6
-  generic map (INIT => X"0080020000000000")
-  port map( I0 => instruction(12),
-            I1 => instruction(13),
-            I2 => instruction(14),
-            I3 => instruction(15),
-            I4 => instruction(16),
-            I5 => instruction(17),
-             O => regbank_type);
-
-  bank_lut: LUT6
-  generic map (INIT => X"ACACFF00FF00FF00")
-  port map( I0 => instruction(0),
-            I1 => '0',
-            I2 => instruction(16),
-            I3 => bank,
-            I4 => regbank_type,
-            I5 => t_state(1),
-             O => bank_value);
-
-  bank_flop: FDR
-  port map (  D => bank_value,
-              Q => bank,
-              R => internal_reset,
-              C => clk);
-
-  sx_addr4_flop: FD
-  port map (  D => '0',
-              Q => sx_addr(4),
-              C => clk);
-
   sx_addr(3 downto 0) <= instruction(11 downto 8);
-  sy_addr <= bank & instruction(7 downto 4);
+  sy_addr <= '0' & instruction(7 downto 4);
 
   --
   -------------------------------------------------------------------------------------------
@@ -396,8 +362,8 @@ begin
   end generate address_loop;
 
   --
-  ------------------------------------------------------------------------------------------- 
-  -- 
+  -------------------------------------------------------------------------------------------
+  --
   -- Program Counter
   --
   prog_count: program_counter
