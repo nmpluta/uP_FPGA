@@ -71,97 +71,105 @@ architecture low_level_definition of picoblaze is
     end component;
 
     -- Flags
-    component flags
-      port(
-        clk : in std_logic;
+        component flags
+        port(
+                clk                     : in std_logic;
+                carry_arith_logical     : in std_logic;
+                flag_enable             : in std_logic;
+                internal_reset          : in std_logic;
+                alu_result              : in std_logic_vector(7 downto 0);
+                instruction             : in std_logic_vector(17 downto 0);
+                carry_flag              : out std_logic;
+                strobe_type             : out std_logic
+        );
+        end component;
 
-        instruction :       in std_logic_vector(17 downto 0);
-        carry_arith_logical : in std_logic;
-        carry_flag :        out std_logic;
-        flag_enable :       in std_logic;
-        internal_reset : in std_logic;
-        alu_result : in std_logic_vector(7 downto 0);
-        strobe_type : out std_logic
-    );
-    end component;
 
+    component state_control
+        port(
+                clk                     : in std_logic;
+                reset                   : in std_logic;
+                internal_reset_out      : out std_logic;
+                t_state_out             : out std_logic_vector(2 downto 1)
+        );
+        end component;
 
 --
 -- State Machine and Interrupt
 --
-signal          t_state_value : std_logic_vector(2 downto 1);
-signal                t_state : std_logic_vector(2 downto 1);
-signal              run_value : std_logic;
-signal                    run : std_logic;
-signal   internal_reset_value : std_logic;
-signal         internal_reset : std_logic;
+signal t_state_value : std_logic_vector(2 downto 1);
+signal t_state : std_logic_vector(2 downto 1);
+signal run_value : std_logic;
+signal run : std_logic;
+signal internal_reset_value : std_logic;
+signal internal_reset : std_logic;
 
 --
 -- Arithmetic and Logical Functions
 --
-signal      arith_logical_sel : std_logic_vector(2 downto 0);
-signal         arith_carry_in : std_logic;
-signal      arith_carry_value : std_logic;
-signal            arith_carry : std_logic;
-signal     half_arith_logical : std_logic_vector(7 downto 0);
-signal     logical_carry_mask : std_logic_vector(7 downto 0);
-signal    carry_arith_logical : std_logic_vector(7 downto 0);
-signal    arith_logical_value : std_logic_vector(7 downto 0);
-signal   arith_logical_result : std_logic_vector(7 downto 0);
+signal arith_logical_sel : std_logic_vector(2 downto 0);
+signal arith_carry_in : std_logic;
+signal arith_carry_value : std_logic;
+signal arith_carry : std_logic;
+signal half_arith_logical : std_logic_vector(7 downto 0);
+signal logical_carry_mask : std_logic_vector(7 downto 0);
+signal carry_arith_logical : std_logic_vector(7 downto 0);
+signal arith_logical_value : std_logic_vector(7 downto 0);
+signal arith_logical_result : std_logic_vector(7 downto 0);
 --
 -- ALU structure
 --
-signal             alu_result : std_logic_vector(7 downto 0);
-signal            alu_mux_sel : std_logic_vector(1 downto 0);
+signal alu_result : std_logic_vector(7 downto 0);
+signal alu_mux_sel : std_logic_vector(1 downto 0);
 --
 -- Strobes
 --
-signal            strobe_type : std_logic;
+signal strobe_type : std_logic;
 --
 -- Flags
 --
-signal       flag_enable_type : std_logic;
-signal      flag_enable_value : std_logic;
-signal            flag_enable : std_logic;
-signal       carry_flag_value : std_logic;
-signal             carry_flag : std_logic;
+signal flag_enable_type : std_logic;
+signal flag_enable_value : std_logic;
+signal flag_enable : std_logic;
+signal carry_flag_value : std_logic;
+signal carry_flag : std_logic;
 
-signal    use_zero_flag_value : std_logic;
-signal          use_zero_flag : std_logic;
-signal    drive_carry_in_zero : std_logic;
-signal          carry_in_zero : std_logic;
-signal             lower_zero : std_logic;
-signal         lower_zero_sel : std_logic;
-signal       carry_lower_zero : std_logic;
-signal            middle_zero : std_logic;
-signal        middle_zero_sel : std_logic;
-signal      carry_middle_zero : std_logic;
-signal         upper_zero_sel : std_logic;
-signal        zero_flag_value : std_logic;
-signal              zero_flag : std_logic;
+signal use_zero_flag_value : std_logic;
+signal use_zero_flag : std_logic;
+signal drive_carry_in_zero : std_logic;
+signal carry_in_zero : std_logic;
+signal lower_zero : std_logic;
+signal lower_zero_sel : std_logic;
+signal carry_lower_zero : std_logic;
+signal middle_zero : std_logic;
+signal middle_zero_sel : std_logic;
+signal carry_middle_zero : std_logic;
+signal upper_zero_sel : std_logic;
+signal zero_flag_value : std_logic;
+signal zero_flag : std_logic;
 
 --
 -- Registers
 --
-signal        register_enable : std_logic;
-signal                sx_addr : std_logic_vector(4 downto 0);
-signal                sy_addr : std_logic_vector(4 downto 0);
-signal                     sx : std_logic_vector(7 downto 0);
-signal                     sy : std_logic_vector(7 downto 0);
+signal register_enable : std_logic;
+signal sx_addr : std_logic_vector(4 downto 0);
+signal sy_addr : std_logic_vector(4 downto 0);
+signal sx : std_logic_vector(7 downto 0);
+signal sy : std_logic_vector(7 downto 0);
 --
 -- Second Operand
 --
-signal               sy_or_kk : std_logic_vector(7 downto 0);
+signal sy_or_kk : std_logic_vector(7 downto 0);
 --
 -- Program Counter
 --
-signal                pc_mode : std_logic_vector(2 downto 0);
-signal        register_vector : std_logic_vector(11 downto 0);
-signal                half_pc : std_logic_vector(11 downto 0);
-signal               carry_pc : std_logic_vector(10 downto 0);
-signal               pc_value : std_logic_vector(11 downto 0);
-signal                     pc : std_logic_vector(11 downto 0);
-signal              pc_vector : std_logic_vector(11 downto 0);
+signal pc_mode : std_logic_vector(2 downto 0);
+signal register_vector : std_logic_vector(11 downto 0);
+signal half_pc : std_logic_vector(11 downto 0);
+signal carry_pc : std_logic_vector(10 downto 0);
+signal pc_value : std_logic_vector(11 downto 0);
+signal pc : std_logic_vector(11 downto 0);
+signal pc_vector : std_logic_vector(11 downto 0);
 
 begin
 
@@ -176,48 +184,14 @@ begin
   --
   -------------------------------------------------------------------------------------------
   --
+        my_state_control: state_control
+        port map(
+                        clk                     => clk,
+                        t_state_out             => t_state,
+                        internal_reset_out      => internal_reset,
+                        reset                   => reset
+                );
 
-  reset_lut: LUT6_2
-  generic map (INIT => X"FFFFF55500000EEE")
-  port map( I0 => run,
-            I1 => internal_reset,
-            I2 => '0',
-            I3 => t_state(2),
-            I4 => reset,
-            I5 => '1',
-            O5 => run_value,
-            O6 => internal_reset_value);
-
-  run_flop: FD
-  port map (  D => run_value,
-              Q => run,
-              C => clk);
-
-  internal_reset_flop: FD
-  port map (  D => internal_reset_value,
-              Q => internal_reset,
-              C => clk);
-
-  t_state_lut: LUT6_2
-  generic map (INIT => X"0083000B00C4004C")
-  port map( I0 => t_state(1),
-            I1 => t_state(2),
-            I2 => '0',
-            I3 => internal_reset,
-            I4 => '0',
-            I5 => '1',
-            O5 => t_state_value(1),
-            O6 => t_state_value(2));
-
-  t_state1_flop: FD
-  port map (  D => t_state_value(1),
-              Q => t_state(1),
-              C => clk);
-
-  t_state2_flop: FD
-  port map (  D => t_state_value(2),
-              Q => t_state(2),
-              C => clk);
   -------------------------------------------------------------------------------------------
   --
   -- Decoders
@@ -269,33 +243,6 @@ begin
       register_enable => register_enable,
       read_strobe => read_strobe,
       write_strobe => write_strobe);
-
-  --
-  -------------------------------------------------------------------------------------------
-  -- Register bank control
-  --
-  --     2 x LUT6
-  --     1 x FDR
-  --     1 x FD
-  --
-  -------------------------------------------------------------------------------------------
-  --
-  sx_addr(3 downto 0) <= instruction(11 downto 8);
-  sy_addr <= '0' & instruction(7 downto 4);
-
-  --
-  -------------------------------------------------------------------------------------------
-  -- Flags
-  --
-  --     3 x LUT6
-  --     5 x LUT6_2
-  --     3 x FD
-  --     2 x FDRE
-  --     2 x XORCY
-  --     5 x MUXCY
-  --
-  -------------------------------------------------------------------------------------------
-  --
 
     my_flags: flags
         port map(
@@ -608,4 +555,7 @@ begin
   address <= pc;
   bram_enable <= t_state(2);
   port_id <= sy_or_kk;
+
+  sx_addr(3 downto 0) <= instruction(11 downto 8);
+  sy_addr <= '0' & instruction(7 downto 4);
 end low_level_definition;
