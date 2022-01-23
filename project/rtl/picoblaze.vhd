@@ -6,16 +6,18 @@ use IEEE.STD_LOGIC_UNSIGNED.ALL;
 use UNISIM.VCOMPONENTS.ALL;
 
 entity picoblaze is
-  port (                   address : out std_logic_vector(11 downto 0);
-                       instruction : in std_logic_vector(17 downto 0);
-                       bram_enable : out std_logic;
-                           in_port : in std_logic_vector(7 downto 0);
-                           out_port : out std_logic_vector(7 downto 0);
-                           port_id : out std_logic_vector(7 downto 0);
-                      write_strobe : out std_logic;
-                       read_strobe : out std_logic;
-                             reset : in std_logic;
-                               clk : in std_logic);
+        Port(
+                        clk             : in std_logic;
+                        reset           : in std_logic;
+                        in_port         : in std_logic_vector(7 downto 0);
+                        instruction     : in std_logic_vector(17 downto 0);
+                        bram_enable     : out std_logic;
+                        write_strobe    : out std_logic;
+                        read_strobe     : out std_logic;
+                        out_port        : out std_logic_vector(7 downto 0);
+                        port_id         : out std_logic_vector(7 downto 0);
+                        address         : out std_logic_vector(11 downto 0)
+        );
   end picoblaze;
 --
 -------------------------------------------------------------------------------------------

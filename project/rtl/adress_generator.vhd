@@ -17,7 +17,7 @@ architecture arch of adress_generator is
 begin
         address_loop: for i in 0 to 11 generate
         begin
-                output_data: if (i rem 2)=0 generate
+                output_data: if (i rem 2) = 0 generate
                 begin
                         pc_vector_mux_lut: LUT3
                         generic map (INIT => X"0A")

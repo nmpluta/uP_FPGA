@@ -179,6 +179,5 @@ begin
                         R => internal_reset,
                         C => clk
                 );
-
 end arch;
 
