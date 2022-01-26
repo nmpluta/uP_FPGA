@@ -37,6 +37,7 @@ proc attach_rtl_files {} {
                 rtl/program_counter_decode.vhd
                 rtl/program_counter.vhd
                 rtl/arithmetic_logic_unit.vhd
+                rtl/decode_instructions.vhd
         }
 
         # read_verilog {
