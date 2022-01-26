@@ -82,6 +82,7 @@ architecture low_level_definition of picoblaze is
                 alu_result              : in std_logic_vector(7 downto 0);
                 instruction             : in std_logic_vector(17 downto 0);
                 carry_flag              : out std_logic;
+                zero_flag               : out std_logic;
                 strobe_type             : out std_logic
         );
         end component;
@@ -262,6 +263,7 @@ begin
                         carry_arith_logical     => carry_arith_logical(7),
                         alu_result              => alu_result,
                         strobe_type             => strobe_type,
+                        zero_flag               => zero_flag,
                         carry_flag              => carry_flag
                 );
 
