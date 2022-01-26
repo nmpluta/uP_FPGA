@@ -297,27 +297,22 @@ begin
     --
     -------------------------------------------------------------------------------------------
     --
-    -- Multiplex outputs from ALU functions, scratch pad memory and input port.
+    -- Multiplex outputs from ALU functions and input port.
     --
-    -- alu_mux_sel (1) (0)
-    --              0   0  Arithmetic and Logical Instructions
-    --              0   1  Shift and Rotate Instructions
-    --              1   0  Input Port
-    --              1   1  Scratch Pad Memory
+    -- alu_mux_sel (1)
+    --              0   Arithmetic and Logical Instructions
+    --              1   Input Port
     --
-    --     8 x LUT6
+    --     8 x LUT3
     --
     -------------------------------------------------------------------------------------------
     --
 
-    alu_mux_lut: LUT6
-    generic map (INIT => X"FF00F0F0CCCCAAAA")
+    alu_mux_lut: LUT3
+    generic map (INIT => X"CA")
     port map( I0 => arith_logical_result(i),
-              I1 => '0',
-              I2 => in_port(i),
-              I3 => '0',
-              I4 => alu_mux_sel(0),
-              I5 => alu_mux_sel(1),
+              I1 => in_port(i),
+              I2 => alu_mux_sel(1),
                O => alu_result(i));
 
   end generate data_path_loop;
@@ -327,6 +322,8 @@ begin
   -- Arithmetic Logic Unit
   --
   --
+  -------------------------------------------------------------------------------------------
+  -- 
 	alu : arithmetic_logic_unit
 	port map(
 		clk => clk,
