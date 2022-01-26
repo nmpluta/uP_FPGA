@@ -19,12 +19,9 @@ entity picoblaze is
                         address         : out std_logic_vector(11 downto 0)
         );
   end picoblaze;
---
--------------------------------------------------------------------------------------------
---
--- Start of Main Architecture for picoblaze
---
+
 architecture low_level_definition of picoblaze is
+
   -- Instructions decoder
   component decode_instructions
     port(
@@ -114,15 +111,14 @@ architecture low_level_definition of picoblaze is
                   out_port        : out std_logic_vector(7 downto 0)
           );
         end component;
-        --
+
         -- State Machine and Interrupt
-        --
+  
         signal t_state : std_logic_vector(2 downto 1);
         signal internal_reset : std_logic;
 
-        --
         -- Arithmetic and Logical Functions
-        --
+
         signal arith_logical_sel : std_logic_vector(2 downto 0);
         signal arith_carry_in : std_logic;
         signal arith_carry_value : std_logic;
@@ -132,55 +128,44 @@ architecture low_level_definition of picoblaze is
         signal carry_arith_logical : std_logic_vector(7 downto 0);
         signal arith_logical_value : std_logic_vector(7 downto 0);
         signal arith_logical_result : std_logic_vector(7 downto 0);
-        --
+
         -- ALU structure
-        --
+
         signal alu_result : std_logic_vector(7 downto 0);
         signal alu_mux_sel : std_logic_vector(1 downto 0);
-        --
+
         -- Strobes
-        --
+
         signal strobe_type : std_logic;
-        --
+
         -- Flags
-        --
+
         signal flag_enable : std_logic;
         signal carry_flag : std_logic;
         signal zero_flag : std_logic;
 
-        --
         -- Registers
-        --
+
         signal register_enable : std_logic;
         signal sx_addr : std_logic_vector(4 downto 0);
         signal sy_addr : std_logic_vector(4 downto 0);
         signal sx : std_logic_vector(7 downto 0);
         signal sy : std_logic_vector(7 downto 0);
-        --
+
         -- Second Operand
-        --
+
         signal sy_or_kk : std_logic_vector(7 downto 0);
-        --
+
         -- Program Counter
-        --
+
         signal pc_mode : std_logic_vector(2 downto 0);
         signal register_vector : std_logic_vector(11 downto 0);
         signal pc : std_logic_vector(11 downto 0);
         signal pc_vector : std_logic_vector(11 downto 0);
 
 begin
-
-  --
-  -------------------------------------------------------------------------------------------
-  --
   -- State Machine and Control
-  --
-  --     1 x LUT6
-  --     4 x LUT6_2
-  --     9 x FD
-  --
-  -------------------------------------------------------------------------------------------
-  --
+
         my_state_control: state_control
         port map(
                         clk                     => clk,
@@ -189,9 +174,8 @@ begin
                         reset                   => reset
                 );
 
-  --
   -- Decoding instructions
-  --
+
   decode: decode_instructions
     port map(
       clk => clk,
@@ -211,9 +195,9 @@ begin
       register_enable => register_enable,
       read_strobe => read_strobe,
       write_strobe => write_strobe);
-  --
+
   -- Flags
-  --
+
         my_flags: flags
         port map(
                         clk                     => clk,
@@ -236,33 +220,8 @@ begin
                         sy_or_kk        => sy_or_kk,
                         out_port        => out_port
                 );
-  -------------------------------------------------------------------------------------------
-  --
+
   -- 12-bit Program Address Generation
-  --
-  -------------------------------------------------------------------------------------------
-  -- Prepare 12-bit vector from the sX and sY register outputs.
-  --
-
---     --
---     -------------------------------------------------------------------------------------------
---     --
---     -- Selection of vector to load program counter
---     --
---     -- instruction(12)
---     --              0  Constant aaa from instruction(11:0)
---     --              1  Return vector from stack
---     --
---     -- 'aaa' is used during 'JUMP aaa', 'JUMP c, aaa', 'CALL aaa' and 'CALL c, aaa'.
---     -- Return vector is used during 'RETURN', 'RETURN c', 'RETURN&LOAD' and 'RETURNI'.
---     --
---     --     6 x LUT6_2
---     --     12 x FD
---     --
---     -------------------------------------------------------------------------------------------
---     -- Pipeline output of the stack memory
---     --
-
 
         my_adress_generator: adress_generator
         port map(
@@ -270,11 +229,8 @@ begin
                         pc_vector       => pc_vector
                 );
 
-  --
-  -------------------------------------------------------------------------------------------
-  --
   -- Program Counter
-  --
+
   prog_count: program_counter
   port map(
     clk => clk,
@@ -285,13 +241,6 @@ begin
     register_vector => register_vector,
     pc => pc);
 
-  --
-  -------------------------------------------------------------------------------------------
-  --
-  -- 8-bit Data Path
-  --
-  -------------------------------------------------------------------------------------------
-  --
   data_path_loop: for i in 0 to 7 generate
   begin
     --

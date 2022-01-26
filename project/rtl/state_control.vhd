@@ -16,7 +16,6 @@ end state_control;
 
 architecture arch of state_control is
 
--- internal signal
         signal internal_reset           : std_logic;
         signal internal_reset_value     : std_logic;
         signal run                      : std_logic;

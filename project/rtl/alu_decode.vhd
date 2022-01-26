@@ -21,42 +21,9 @@ entity alu_decode is
 
 architecture arch of alu_decode is
 
--- internal signal
 signal      alu_mux_sel_value : std_logic_vector(1 downto 0);
 
---**********************************************************************************
---
---
--------------------------------------------------------------------------------------------
---
--- WebTalk Attributes
---
-
--- attribute CORE_GENERATION_INFO : string;
--- attribute CORE_GENERATION_INFO of low_level_definition : ARCHITECTURE IS 
---     "kcpsm6,kcpsm6_v1_3,{component_name=kcpsm6}";
-
--- --
--- -- Attributes to guide mapping of logic into Slices.
--- --
--- attribute hblknm of          alu_decode0_lut : label is "kcpsm6_decode2";
--- attribute hblknm of        alu_mux_sel0_flop : label is "kcpsm6_decode2";
--- attribute hblknm of          alu_decode1_lut : label is "kcpsm6_decode1";
--- attribute hblknm of        alu_mux_sel1_flop : label is "kcpsm6_decode1";
--- attribute hblknm of          alu_decode2_lut : label is "kcpsm6_decode2";
-
---
--------------------------------------------------------------------------------------------
---
--- Start of decode_alu circuit description
---
--------------------------------------------------------------------------------------------
---
 begin
-
-  --
-  -- Decoding for ALU
-  --
 
   alu_decode0_lut: LUT6_2
   generic map (INIT => X"03CA000004200000")
@@ -102,6 +69,4 @@ begin
             O5 => arith_logical_sel(1),
             O6 => arith_logical_sel(2));
 
-
 end arch;
-

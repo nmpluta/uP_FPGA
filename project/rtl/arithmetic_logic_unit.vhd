@@ -21,56 +21,15 @@ entity arithmetic_logic_unit is
 
 architecture arch of arithmetic_logic_unit is
 
--- internal signal
 signal logical_carry_mask : std_logic_vector(7 downto 0);
 signal half_arith_logical : std_logic_vector(7 downto 0);
 signal arith_logical_value : std_logic_vector(7 downto 0);
 signal carry_arith_logical_internal : std_logic_vector(7 downto 0);
 
---**********************************************************************************
---
--------------------------------------------------------------------------------------------
---
--- Start of arithmetic_logic_unit circuit description
---
--------------------------------------------------------------------------------------------
---
 begin
-  --
-  -------------------------------------------------------------------------------------------
-  --
-  -- 8-bit Data Path
-  --
-  -------------------------------------------------------------------------------------------
-  --
+
   data_path_loop: for i in 0 to 7 generate
   begin
-    -------------------------------------------------------------------------------------------
-    --
-    -- Arithmetic and Logical operations
-    --
-    -- Definition of....
-    --    ADD and SUB also used for ADDCY, SUBCY, COMPARE and COMPARECY.
-    --    LOAD, AND, OR and XOR also used for LOAD*, RETURN&LOAD, TEST and TESTCY.
-    --
-    -- arith_logical_sel (2) (1) (0)
-    --                    0   0   0  - LOAD
-    --                    0   0   1  - AND
-    --                    0   1   0  - OR
-    --                    0   1   1  - XOR
-    --                    1   X   0  - SUB
-    --                    1   X   1  - ADD
-    --
-    -- Includes pipeline stage.
-    --
-    -- 2 Slices
-    --     8 x LUT6_2
-    --     8 x MUXCY
-    --     8 x XORCY
-    --     8 x FD
-    --
-    -------------------------------------------------------------------------------------------
-    --
 
     arith_logical_lut: LUT6_2
     generic map (INIT => X"69696E8ACCCC0000")

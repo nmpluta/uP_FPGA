@@ -32,19 +32,10 @@ signal    register_enable_value : std_logic;
 signal    read_strobe_value :     std_logic;
 signal    write_strobe_value :    std_logic;
 
---**********************************************************************************
---
--------------------------------------------------------------------------------------------
---
 -- Start of strobe_enables_decode circuit description
---
--------------------------------------------------------------------------------------------
---
 begin
 
-  --
   -- Decoding for strobes and enables
-  --
 
   register_enable_type_lut: LUT6_2
   generic map (INIT => X"00013F3F0010F7CE")
@@ -98,6 +89,5 @@ begin
   port map (  D => read_strobe_value,
               Q => read_strobe,
               C => clk);
-
 
 end arch;

@@ -21,21 +21,6 @@ begin
         data_path_loop1: for i in 0 to 7 generate
         begin
 
-          --
-          -------------------------------------------------------------------------------------------
-          --
-          -- Selection of second operand to ALU and port_id
-          --
-          -- instruction(12)
-          --           0  Register sY
-          --           1  Constant kk
-          --
-          --     4 x LUT6_2
-          --
-          -------------------------------------------------------------------------------------------
-          -- 2 bits per LUT so only generate when 'i' is even
-          --
-
           output_data: if (i rem 2)=0 generate
           begin
 
@@ -51,21 +36,7 @@ begin
                       O6 => sy_or_kk(i+1));
 
           end generate output_data;
-
-          --
-          -------------------------------------------------------------------------------------------
-          --
-          -- Selection of out_port value
-          --
-          -- instruction(13)
-          --              0  Register sX
-          --              1  Constant kk from instruction(11:4)
-          --
-          --     4 x LUT6_2
-          --
-          -------------------------------------------------------------------------------------------
-          -- 2 bits per LUT so only generate when 'i' is even
-          --
+          
           second_operand: if (i rem 2)=0 generate
           begin
 

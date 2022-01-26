@@ -1,7 +1,3 @@
--- Library declarations
---
--- Standard IEEE libraries
---
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
@@ -65,19 +61,8 @@ architecture arch of decode_instructions is
       write_strobe :      out std_logic);
   end component;
 
---**********************************************************************************
--------------------------------------------------------------------------------------------
---
--- Start of decode_instruction circuit description
---
--------------------------------------------------------------------------------------------
---
 begin
 
-  -------------------------------------------------------------------------------------------
-  --
-  -- Decoding for Program Counter
-  --
   dec_PC: program_counter_decode
     port map(
       clk => clk,
@@ -87,10 +72,7 @@ begin
       zero_flag => zero_flag,
       pc_mode => pc_mode);
 
-
-  --
   -- Decoding for ALU
-  --
 
   dec_alu: alu_decode
     port map(
@@ -101,9 +83,7 @@ begin
       arith_carry_in => arith_carry_in,
       alu_mux_sel => alu_mux_sel);
 
-  --
   -- Decoding for strobes and enables
-  --
 
   dec_str_en: strobe_enables_decode
     port map(

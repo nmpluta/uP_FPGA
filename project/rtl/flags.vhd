@@ -21,7 +21,6 @@ end flags;
 
 architecture arch of flags is
 
-        -- internal signal
         signal arith_carry_value        : std_logic;
         signal arith_carry              : std_logic;
         signal drive_carry_in_zero      : std_logic;
@@ -39,19 +38,6 @@ architecture arch of flags is
         signal lower_zero               : std_logic;
         signal lower_zero_sel           : std_logic;
 
-  --
-  -------------------------------------------------------------------------------------------
-  -- Flags
-  --
-  --     3 x LUT6
-  --     5 x LUT6_2
-  --     3 x FD
-  --     2 x FDRE
-  --     2 x XORCY
-  --     5 x MUXCY
-  --
-  -------------------------------------------------------------------------------------------
-  --
 begin
         arith_carry_flop: FD
         port map (
@@ -182,4 +168,3 @@ begin
                 );
         zero_flag <= zero_flag_buf;
 end arch;
-

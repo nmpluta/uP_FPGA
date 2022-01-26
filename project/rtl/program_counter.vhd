@@ -28,50 +28,11 @@ signal  pc_buffer : std_logic_vector(11 downto 0);
 signal  half_pc : std_logic_vector(11 downto 0);
 signal  carry_pc : std_logic_vector(10 downto 0);
 
-    --
-    -------------------------------------------------------------------------------------------
-    --
-    -- Program Counter
-    --
-    -- Reset by internal_reset has highest priority.
-    -- Enabled by t_state(1) has second priority.
-    --
-    -- The function performed is defined by pc_mode(2:0).
-    --
-    -- pc_mode (2) (1) (0)
-    --          0   0   1  pc+1 for normal program flow.
-    --          1   0   0  Forces interrupt vector value (+0) during active interrupt.
-    --                     The vector is defined by a generic with default value FF0 hex.
-    --          1   1   0  register_vector (+0) for 'JUMP (sX, sY)' and 'CALL (sX, sY)'.
-    --          0   1   0  pc_vector (+0) for 'JUMP/CALL aaa' and 'RETURNI'.
-    --          0   1   1  pc_vector+1 for 'RETURN'.
-    --
-    -- Note that pc_mode(0) is High during operations that require an increment to occur.
-    -- The LUT6 associated with the LSB must invert pc or pc_vector in these cases and
-    -- pc_mode(0) also has to be connected to the start of the carry chain.
-    --
-    -- 3 Slices
-    --     12 x LUT6
-    --     11 x MUXCY
-    --     12 x XORCY
-    --     12 x FDRE
-    --
-    --------
+-- Program Counter
 
---**********************************************************************************
---
--------------------------------------------------------------------------------------------
---
--- Start of program_counter circuit description
---
--------------------------------------------------------------------------------------------
---
 begin
   address_loop: for i in 0 to 11 generate
     begin
-    -- 
-    -- Program Counter
-    --
     
     pc_flop: FDRE
     port map (  D => pc_value(i),
@@ -117,9 +78,8 @@ begin
                   I5 => pc_mode(2),
                    O => half_pc(i));
 
-      --
       -- Carry chain implementing remainder of increment function
-      --
+
       pc_xorcy: XORCY
       port map( LI => half_pc(i),
                 CI => carry_pc(i-1),
