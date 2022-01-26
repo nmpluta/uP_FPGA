@@ -14,6 +14,7 @@ entity flags is
                 carry_arith_logical     : in std_logic;
                 alu_result              : in std_logic_vector(7 downto 0);
                 strobe_type             : out std_logic;
+                zero_flag               : out std_logic;
                 carry_flag              : out std_logic
         );
 end flags;
@@ -28,7 +29,7 @@ architecture arch of flags is
         signal carry_in_zero            : std_logic;
         signal use_zero_flag_value      : std_logic;
         signal use_zero_flag            : std_logic;
-        signal zero_flag                : std_logic;
+        signal zero_flag_buf            : std_logic;
         signal middle_zero              : std_logic;
         signal carry_lower_zero         : std_logic;
         signal middle_zero_sel          : std_logic;
@@ -134,7 +135,7 @@ begin
         generic map (INIT => X"0000000D00000000")
         port map(
                         I0 => use_zero_flag,
-                        I1 => zero_flag,
+                        I1 => zero_flag_buf,
                         I2 => alu_result(5),
                         I3 => alu_result(6),
                         I4 => alu_result(7),
@@ -174,10 +175,11 @@ begin
         zero_flag_flop: FDRE
         port map (
                         D => zero_flag_value,
-                        Q => zero_flag,
+                        Q => zero_flag_buf,
                         CE => flag_enable,
                         R => internal_reset,
                         C => clk
                 );
+        zero_flag <= zero_flag_buf;
 end arch;
 
