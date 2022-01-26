@@ -33,6 +33,7 @@ proc attach_rtl_files {} {
                 rtl/flags.vhd
                 rtl/state_control.vhd
                 rtl/adress_generator.vhd
+                rtl/in_out_adress_ctl.vhd
                 rtl/strobe_enables_decode.vhd
                 rtl/program_counter_decode.vhd
                 rtl/program_counter.vhd
